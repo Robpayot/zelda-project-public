@@ -1,0 +1,24 @@
+// grid responsive system
+$base-width: 1920;
+
+// Responsive values for Font
+@function responsive-value($size) {
+  @return calc($size / $base-width) * 100vw;
+}
+
+// Set responsive font size with a minimum in pixels based on design grid
+@mixin responsive-font-size($base-font-size, $min: $base-font-size, $max: $base-font-size) {
+  font-size: responsive-value($base-font-size);
+
+  // set min font
+  $breakpoint: calc($min / $base-font-size * $base-width);
+  @media only screen and (max-width: #{$breakpoint}px) {
+    font-size: #{$min}px;
+  }
+
+  // set max font
+  $breakpointMax: calc($max / $base-font-size * $base-width);
+  @media only screen and (min-width: #{$breakpointMax}px) {
+    font-size: #{$max}px;
+  }
+}

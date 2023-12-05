@@ -1,0 +1,123 @@
+.settings {
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  pointer-events: auto;
+
+  transition: opacity 1s ease 1s, visibility 1s ease 1s;
+
+  z-index: 1100;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-overlay);
+    transform: translateY(-100vh);
+    transition: transform 1.3s var(--ease-in-out-quart);
+  }
+
+  &__content {
+    transform: translateY(-100vh);
+    transition: transform 1.3s var(--ease-in-out-quart) 0.06s;
+  }
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    &::before {
+      transform: translateY(0);
+      transition: transform 1.1s var(--ease-in-out-quart);
+    }
+
+    .settings__content {
+      transform: translateY(0);
+      transition: transform 1.1s var(--ease-in-out-quart) 0.06s;
+    }
+  }
+
+  &__title {
+    margin-bottom: 3vw;
+    margin-top: -3vw;
+
+    @include respond-to(smartphone) {
+      margin-bottom: 9vw;
+    }
+
+    @include respond-to(mobile-landscape) {
+      margin-bottom: 3vw;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  &__button {
+    margin-bottom: 0.5vw;
+    position: relative;
+
+    @include respond-to(smartphone) {
+      margin-bottom: 4.5vw;
+    }
+
+    @include respond-to(mobile-landscape) {
+      margin-bottom: 0.5vw;
+    }
+
+    &.is-reco {
+      margin-bottom: 1.8vw;
+
+      @include respond-to(smartphone) {
+        margin-bottom: 4.5vw;
+        &::before {
+          opacity: 1;
+          transform: scale(1) translate(-150%, -50%);
+        }
+
+        &::after {
+          opacity: 1;
+          transform: scale(1) translate(50%, -50%);
+        }
+      }
+
+      @include respond-to(mobile-landscape) {
+        margin-bottom: 1.8vw;
+      }
+    }
+  }
+
+  &__reco {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, 0);
+
+    color: var(--color-grey);
+    font-family: 'ReggaeOne';
+    font-size: 1.2vw;
+
+    @include respond-to(smartphone) {
+      font-size: 3vw;
+    }
+
+    @include respond-to(mobile-landscape) {
+      font-size: 1.2vw;
+    }
+  }
+}

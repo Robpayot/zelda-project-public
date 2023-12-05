@@ -1,0 +1,32 @@
+.separator {
+  display: flex;
+  align-items: center;
+  margin: 2vw 0;
+
+  @include respond-to(smartphone) {
+    margin: 3vw 0;
+  }
+
+  img {
+    display: block;
+    width: 2.5vw;
+
+    &:last-child {
+      transform: scaleX(-1);
+    }
+
+    @include respond-to(smartphone) {
+      width: 6vw;
+    }
+  }
+  &__line {
+    width: 100%;
+    height: 2px;
+    margin: 0 1vw;
+    background-color: var(--color-black);
+
+    @include respond-to(smartphone) {
+      height: 1px;
+    }
+  }
+}

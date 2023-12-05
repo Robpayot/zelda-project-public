@@ -1,0 +1,366 @@
+.hud {
+  display: inline-block;
+
+  .separator {
+    margin: 1vw 0;
+  }
+  &__hearts {
+    display: flex;
+
+    .hearts__icon {
+      width: 4vw;
+      max-width: 77px;
+      opacity: 0;
+
+      @include respond-to(smartphone) {
+        width: 9vw;
+      }
+
+      &.visible {
+        opacity: 1;
+      }
+    }
+  }
+
+  &__rupees {
+    display: flex;
+    align-items: center;
+    margin-top: 0px;
+    margin-bottom: 4px;
+
+    &__logo {
+      width: 3vw;
+      margin-right: 0.5vw;
+      max-width: 58px;
+
+      @include respond-to(smartphone) {
+        width: 7vw;
+      }
+    }
+
+    &__numbers {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .rupees__number {
+    $rupeeW: 2.1vw;
+    $rupeeWMax: 40px;
+    $rupeeWMobile: 4vw;
+
+    width: $rupeeW;
+    height: $rupeeW;
+    background-image: url('/icons/numbers/number_sprites.png');
+    background-position: 0px 0px;
+    background-size: calc($rupeeW * 10);
+    margin-right: -0.45vw;
+    display: block;
+
+    @include respond-to(smartphone) {
+      width: $rupeeWMobile;
+      height: $rupeeWMobile;
+      background-size: calc($rupeeWMobile * 10);
+    }
+
+    @include respond-to(above-desktop) {
+      width: $rupeeWMax;
+      height: $rupeeWMax;
+      background-size: calc($rupeeWMax * 10);
+      margin-right: -8.6px;
+    }
+
+    &.i0 {
+      background-position: 0px 0px;
+    }
+    &.i1 {
+      background-position: calc(-#{$rupeeW}) 0px;
+      @include respond-to(smartphone) {
+        background-position: calc(-#{$rupeeWMobile}) 0px;
+      }
+      @include respond-to(above-desktop) {
+        background-position: calc(-#{$rupeeWMax}) 0px;
+      }
+    }
+    &.i2 {
+      background-position: calc(-#{$rupeeW} * 2) 0px;
+      @include respond-to(smartphone) {
+        background-position: calc(-#{$rupeeWMobile} * 2) 0px;
+      }
+      @include respond-to(above-desktop) {
+        background-position: calc(-#{$rupeeWMax * 2}) 0px;
+      }
+    }
+    &.i3 {
+      background-position: calc(-#{$rupeeW} * 3) 0px;
+      @include respond-to(smartphone) {
+        background-position: calc(-#{$rupeeWMobile} * 3) 0px;
+      }
+      @include respond-to(above-desktop) {
+        background-position: calc(-#{$rupeeWMax * 3}) 0px;
+      }
+    }
+    &.i4 {
+      background-position: calc(-#{$rupeeW} * 4) 0px;
+      @include respond-to(smartphone) {
+        background-position: calc(-#{$rupeeWMobile} * 4) 0px;
+      }
+      @include respond-to(above-desktop) {
+        background-position: calc(-#{$rupeeWMax * 4}) 0px;
+      }
+    }
+    &.i5 {
+      background-position: calc(-#{$rupeeW} * 5) 0px;
+      @include respond-to(smartphone) {
+        background-position: calc(-#{$rupeeWMobile} * 5) 0px;
+      }
+      @include respond-to(above-desktop) {
+        background-position: calc(-#{$rupeeWMax * 5}) 0px;
+      }
+    }
+    &.i6 {
+      background-position: calc(-#{$rupeeW} * 6) 0px;
+      @include respond-to(smartphone) {
+        background-position: calc(-#{$rupeeWMobile}* 6) 0px;
+      }
+      @include respond-to(above-desktop) {
+        background-position: calc(-#{$rupeeWMax * 6}) 0px;
+      }
+    }
+    &.i7 {
+      background-position: calc(-#{$rupeeW} * 7) 0px;
+      @include respond-to(smartphone) {
+        background-position: calc(-#{$rupeeWMobile} * 7) 0px;
+      }
+      @include respond-to(above-desktop) {
+        background-position: calc(-#{$rupeeWMax * 7}) 0px;
+      }
+    }
+    &.i8 {
+      background-position: calc(-#{$rupeeW} * 8) 0px;
+      @include respond-to(smartphone) {
+        background-position: calc(-#{$rupeeWMobile} * 8) 0px;
+      }
+      @include respond-to(above-desktop) {
+        background-position: calc(-#{$rupeeWMax * 8}) 0px;
+      }
+    }
+    &.i9 {
+      background-position: calc(-#{$rupeeW} * 9) 0px;
+      @include respond-to(smartphone) {
+        background-position: calc(-#{$rupeeWMobile} * 9) 0px;
+      }
+      @include respond-to(above-desktop) {
+        background-position: calc(-#{$rupeeWMax * 9}) 0px;
+      }
+    }
+  }
+
+  &__rupee-list {
+    &__row {
+      display: flex;
+      align-items: center;
+      margin-top: 0px;
+      margin-bottom: 4px;
+
+      @include respond-to(smartphone) {
+        margin-bottom: 2px;
+      }
+    }
+
+    .hud__rupees__logo {
+      width: 2vw;
+      margin-right: 0.5vw;
+      max-width: 38px;
+
+      @include respond-to(smartphone) {
+        width: 4vw;
+      }
+    }
+
+    .rupees__number {
+      $rupeeW: 1.9vw;
+      $rupeeWMax: 36px;
+      $rupeeWMobile: 3.4vw;
+
+      width: $rupeeW;
+      height: $rupeeW;
+      background-image: url('/icons/numbers/number_sprites.png');
+      background-position: 0px 0px;
+      background-size: calc($rupeeW * 10);
+      margin-right: -0.45vw;
+      display: block;
+
+      @include respond-to(smartphone) {
+        width: $rupeeWMobile;
+        height: $rupeeWMobile;
+        background-size: calc($rupeeWMobile * 10);
+      }
+
+      @include respond-to(above-desktop) {
+        width: $rupeeWMax;
+        height: $rupeeWMax;
+        background-size: calc($rupeeWMax * 10);
+        margin-right: -8.6px;
+      }
+
+      &.i0 {
+        background-position: 0px 0px;
+      }
+      &.i1 {
+        background-position: calc(-#{$rupeeW}) 0px;
+        @include respond-to(smartphone) {
+          background-position: calc(-#{$rupeeWMobile}) 0px;
+        }
+        @include respond-to(above-desktop) {
+          background-position: calc(-#{$rupeeWMax}) 0px;
+        }
+      }
+      &.i2 {
+        background-position: calc(-#{$rupeeW} * 2) 0px;
+        @include respond-to(smartphone) {
+          background-position: calc(-#{$rupeeWMobile} * 2) 0px;
+        }
+        @include respond-to(above-desktop) {
+          background-position: calc(-#{$rupeeWMax * 2}) 0px;
+        }
+      }
+      &.i3 {
+        background-position: calc(-#{$rupeeW} * 3) 0px;
+        @include respond-to(smartphone) {
+          background-position: calc(-#{$rupeeWMobile} * 3) 0px;
+        }
+        @include respond-to(above-desktop) {
+          background-position: calc(-#{$rupeeWMax * 3}) 0px;
+        }
+      }
+      &.i4 {
+        background-position: calc(-#{$rupeeW} * 4) 0px;
+        @include respond-to(smartphone) {
+          background-position: calc(-#{$rupeeWMobile} * 4) 0px;
+        }
+        @include respond-to(above-desktop) {
+          background-position: calc(-#{$rupeeWMax * 4}) 0px;
+        }
+      }
+      &.i5 {
+        background-position: calc(-#{$rupeeW} * 5) 0px;
+        @include respond-to(smartphone) {
+          background-position: calc(-#{$rupeeWMobile} * 5) 0px;
+        }
+        @include respond-to(above-desktop) {
+          background-position: calc(-#{$rupeeWMax * 5}) 0px;
+        }
+      }
+      &.i6 {
+        background-position: calc(-#{$rupeeW} * 6) 0px;
+        @include respond-to(smartphone) {
+          background-position: calc(-#{$rupeeWMobile}* 6) 0px;
+        }
+        @include respond-to(above-desktop) {
+          background-position: calc(-#{$rupeeWMax * 6}) 0px;
+        }
+      }
+      &.i7 {
+        background-position: calc(-#{$rupeeW} * 7) 0px;
+        @include respond-to(smartphone) {
+          background-position: calc(-#{$rupeeWMobile} * 7) 0px;
+        }
+        @include respond-to(above-desktop) {
+          background-position: calc(-#{$rupeeWMax * 7}) 0px;
+        }
+      }
+      &.i8 {
+        background-position: calc(-#{$rupeeW} * 8) 0px;
+        @include respond-to(smartphone) {
+          background-position: calc(-#{$rupeeWMobile} * 8) 0px;
+        }
+        @include respond-to(above-desktop) {
+          background-position: calc(-#{$rupeeWMax * 8}) 0px;
+        }
+      }
+      &.i9 {
+        background-position: calc(-#{$rupeeW} * 9) 0px;
+        @include respond-to(smartphone) {
+          background-position: calc(-#{$rupeeWMobile} * 9) 0px;
+        }
+        @include respond-to(above-desktop) {
+          background-position: calc(-#{$rupeeWMax * 9}) 0px;
+        }
+      }
+    }
+  }
+
+  &__best {
+    text-shadow: 0 0 5px rgb(0 0 0 / 0.7);
+    &__text {
+      font-size: 1.8vw;
+
+      @include respond-to(smartphone) {
+        font-size: 3vw;
+      }
+    }
+
+    &__score {
+      // color: black;
+    }
+  }
+
+  &__compass {
+    position: absolute;
+    left: 40px;
+    bottom: 40px;
+    width: 12vw;
+    height: 11.85vw;
+    max-width: 215px;
+    max-height: 215px;
+    border-radius: 50%;
+    overflow: hidden;
+
+    @include respond-to(tablet-landscape) {
+      bottom: auto;
+      left: 25px;
+      width: 12vw;
+      height: 11.7vw;
+      top: 12vw;
+    }
+
+    @include respond-to(tablet-portrait) {
+      bottom: auto;
+      left: 25px;
+      width: 12vw;
+      height: 11.7vw;
+      top: 12vw;
+    }
+
+    @include respond-to(smartphone) {
+      width: 20vw;
+      height: 19.5vw;
+      bottom: auto;
+      top: 26vw;
+      left: 25px;
+    }
+
+    @include respond-to(mobile-landscape) {
+      bottom: auto;
+      top: 11vw;
+      left: 25px;
+      width: 8vw;
+      height: 7.8vw;
+    }
+
+    &-front {
+      position: relative;
+      width: 100%;
+    }
+
+    &-bkg {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      transform: scale(0.9);
+    }
+  }
+}

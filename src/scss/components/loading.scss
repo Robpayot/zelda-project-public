@@ -1,0 +1,45 @@
+@keyframes fadeInOut {
+  0% {
+    opacity: 0; /* Start with fully transparent (invisible) */
+  }
+  50% {
+    opacity: 1; /* Fade in to fully visible */
+  }
+  100% {
+    opacity: 0; /* Fade out to fully transparent again */
+  }
+}
+
+.loading {
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-overlay);
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  pointer-events: auto;
+
+  transition: opacity 1s ease 1s, visibility 1s ease 1s;
+
+  z-index: 11000000;
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+  }
+
+  &__content {
+    animation: fadeInOut 3s ease-in-out infinite;
+  }
+  &__title {
+    color: var(--color-black);
+  }
+}

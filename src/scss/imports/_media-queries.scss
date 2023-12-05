@@ -1,0 +1,34 @@
+$breakpoint-mobile: 768px;
+$breakpoint-tablet: 1024px;
+
+@mixin respond-to($point) {
+  @if $point == desktop {
+    @media only screen and (min-width: $breakpoint-tablet + 1) {
+      @content;
+    }
+  } @else if $point == smartphone {
+    @media only screen and (max-width: $breakpoint-mobile) and (orientation: portrait) {
+      @content;
+    }
+  } @else if $point == above-smartphone {
+    @media only screen and (min-width: $breakpoint-mobile + 1) {
+      @content;
+    }
+  } @else if $point == mobile-landscape {
+    @media only screen and (max-device-width: 1023px) and (orientation: landscape) {
+      @content;
+    }
+  } @else if $point == tablet-portrait {
+    @media only screen and (min-device-width: 768px) and (max-device-width: 1280px) and (orientation: portrait) {
+      @content;
+    }
+  } @else if $point == tablet-landscape {
+    @media only screen and (min-device-width: 1024px) and (max-device-width: 1280px) and (orientation: landscape) {
+      @content;
+    }
+  } @else if $point == above-desktop {
+    @media only screen and (min-width: 1920px) and (orientation: landscape) {
+      @content;
+    }
+  }
+}

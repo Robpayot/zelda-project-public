@@ -1,0 +1,66 @@
+.cookie {
+  position: absolute;
+  height: 150px;
+  bottom: 0;
+  width: 100%;
+  z-index: 100000000000;
+  overflow: hidden;
+  pointer-events: none;
+
+  @include respond-to(smartphone) {
+    height: 80px;
+  }
+
+  &.visible {
+    pointer-events: auto;
+    .cookie__content {
+      transform: none;
+      visibility: visible;
+    }
+  }
+
+  &__content {
+    background-color: white;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: translateY(100%);
+    transition: transform 0.7s var(--ease-out-quart), visibility 0.5s ease;
+    visibility: hidden;
+  }
+
+  &__text {
+    color: var(--color-black);
+    margin-right: 20px;
+  }
+
+  &__button {
+    background: var(--color-black);
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    padding: 15px;
+    color: white;
+    transition: transform 0.5s var(--ease-out-quart);
+    cursor: pointer;
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    @include respond-to(smartphone) {
+      height: 60px;
+      width: 60px;
+    }
+  }
+
+  &__no {
+    margin-left: 15px;
+    transition: transform 0.5s var(--ease-out-quart);
+    cursor: pointer;
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}

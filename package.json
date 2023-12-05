@@ -1,0 +1,55 @@
+{
+  "private": true,
+  "name": "vite-2d-shader-template",
+  "version": "0.0.0",
+  "description": "Template to quickly code in Threejs, powered by Vite.",
+  "author": "Robin Payot <robpayot@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "keywords": [
+    "threejs",
+    "vite",
+    "useless",
+    "fun",
+    "code"
+  ],
+  "contributors": [
+    "Robin Payot <robpayot@gmail.com>"
+  ],
+  "scripts": {
+    "dev": "vite --mode development"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.19.3",
+    "@babel/eslint-parser": "^7.19.1",
+    "@babel/plugin-proposal-class-properties": "^7.14.5",
+    "@babel/preset-env": "^7.15.8",
+    "@types/node": "^16.11.26",
+    "eslint": "^8.10.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-wesbos": "^3.0.2",
+    "eslint-plugin-html": "^6.2.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-prettier": "^4.0.0",
+    "gh-pages": "^5.0.0",
+    "glsl-noise": "^0.0.0",
+    "glslify": "^7.1.1",
+    "prettier": "^2.5.1",
+    "rollup-plugin-glslify": "^1.3.1",
+    "sass": "^1.58.0",
+    "stats-js": "^1.0.1",
+    "vite": "^4.0.1"
+  },
+  "dependencies": {
+    "@tweakpane/plugin-essentials": "^0.1.8",
+    "gsap": "^3.11.3",
+    "howler": "^2.2.4",
+    "html2canvas": "^1.4.1",
+    "light-event-bus": "^1.0.1",
+    "three": "^0.154.0",
+    "three-custom-shader-material": "^5.3.8",
+    "tweakpane": "^3.1.9",
+    "tweakpane-plugin-media": "github:leochocolat/tweakpane-plugin-media"
+  }
+}

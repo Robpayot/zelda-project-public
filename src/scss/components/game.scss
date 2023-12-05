@@ -1,0 +1,260 @@
+.game {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding-left: 40px;
+  padding-top: 40px;
+
+  opacity: 0;
+  visibility: hidden;
+
+  @include respond-to(smartphone) {
+    padding-left: 15px;
+    padding-top: 15px;
+  }
+
+  @include respond-to(mobile-landscape) {
+    padding-left: 15px;
+    padding-top: 15px;
+  }
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+
+    .game__overlay {
+      transform: translateY(0) translate(-50%, -50%);
+      transition: transform 1.1s var(--ease-out-bounce2) 1s;
+      pointer-events: auto;
+    }
+  }
+
+  &.started {
+    .game__overlay {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-100vh) translate(-50%, -50%);
+      transition: transform 1s var(--ease-in-out-quart) 0s, opacity 2s ease, visibility 2s ease;
+    }
+  }
+
+  &.end {
+    .game__end {
+      transform: translateY(0) translate(-50%, -50%);
+      transition: transform 1.1s var(--ease-out-bounce2);
+      pointer-events: auto;
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  &__overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 70%;
+    padding: 2vw 1vw;
+    background-color: var(--color-overlay);
+    transform: translateY(100vh) translate(-50%, -50%);
+    text-align: center;
+    border-radius: 1vw;
+    box-shadow: 3px 5px 12px 2px #0000004f;
+    max-width: 1300px;
+
+    @include respond-to(smartphone) {
+      width: 90%;
+      padding: 6vw 6vw;
+      z-index: 10000;
+    }
+
+    @include respond-to(mobile-landscape) {
+      z-index: 10000;
+    }
+
+    &__title {
+      margin-bottom: 4vw;
+    }
+
+    &__text {
+      margin: 0 auto 4vw;
+      max-width: 45vw;
+
+      @include respond-to(smartphone) {
+        max-width: 100vw;
+      }
+
+      @include respond-to(mobile-landscape) {
+        margin: 0 auto 2vw;
+      }
+    }
+  }
+
+  &__end {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 70%;
+    padding: 2vw 1vw;
+    background-color: var(--color-overlay);
+    transform: translateY(100vh) translate(-50%, -50%);
+    text-align: center;
+    border-radius: 1vw;
+    box-shadow: 3px 5px 12px 2px #0000004f;
+    max-width: 1300px;
+    transition: transform 1s var(--ease-in-out-quart) 0s, opacity 2s ease, visibility 2s ease;
+
+    opacity: 0;
+    visibility: hidden;
+
+    @include respond-to(smartphone) {
+      width: 90%;
+      padding: 6vw 6vw;
+      z-index: 10000;
+    }
+
+    @include respond-to(mobile-landscape) {
+      z-index: 10000;
+    }
+
+    &__content {
+      width: 18vw;
+      max-width: 600px;
+      margin: 20px auto 0;
+
+      @include respond-to(smartphone) {
+        width: 100%;
+        max-width: 250px;
+      }
+    }
+
+    &__screenshot {
+      background-color: var(--color-overlay);
+    }
+
+    &__title {
+      margin-bottom: 2vw;
+    }
+
+    &__text {
+      margin: 0 auto 1vw;
+      max-width: 45vw;
+      color: var(--color-black);
+
+      @include respond-to(smartphone) {
+        max-width: 100vw;
+      }
+
+      @include respond-to(mobile-landscape) {
+        margin: 0 auto 2vw;
+      }
+    }
+
+    &__share,
+    &__close {
+      display: block;
+      margin: 10px auto;
+    }
+
+    &__share {
+      @include responsive-font-size(24, 12, 24);
+
+      @include respond-to(smartphone) {
+        font-size: 4.5vw;
+      }
+
+      display: flex;
+      align-items: center;
+
+      &::before,
+      &::after {
+        height: 1.5vw;
+        width: 1.5vw;
+        max-width: 28px;
+        max-height: 28px;
+
+        @include respond-to(smartphone) {
+          height: 3.5vw;
+          width: 3.5vw;
+        }
+      }
+    }
+
+    &__icon {
+      width: 1vw;
+      height: 1vw;
+      margin: 0 0px -0.2vw 10px;
+
+      path:nth-child(2) {
+        fill: var(--color-overlay);
+      }
+
+      @include respond-to(smartphone) {
+        width: 4vw;
+        height: 4vw;
+        margin: 0 0px -0.8vw 5px;
+      }
+    }
+
+    &__img {
+      display: none;
+    }
+
+    &__dl {
+      display: inline-flex;
+      margin: 0 auto;
+      justify-content: center;
+      align-items: center;
+      @include responsive-font-size(24, 12, 24);
+
+      @include respond-to(smartphone) {
+        font-size: 4.5vw;
+      }
+
+      &::before,
+      &::after {
+        content: '';
+        height: 1.5vw;
+        width: 1.5vw;
+        background: url(/icons/arrow-b.png);
+        background-size: contain;
+        background-repeat: no-repeat;
+        position: absolute;
+        top: 50%;
+        opacity: 0;
+        max-width: 28px;
+        max-height: 28px;
+
+        @include respond-to(smartphone) {
+          height: 3.5vw;
+          width: 3.5vw;
+        }
+      }
+
+      &:hover {
+        transform: scale(1.1);
+        &::before {
+          opacity: 1;
+          transform: scale(1) translate(-150%, -50%);
+        }
+
+        &::after {
+          opacity: 1;
+          transform: scale(1) translate(50%, -50%);
+        }
+      }
+    }
+
+    .separator {
+      margin: 10px 0;
+
+      img {
+        width: 1.5vw;
+        @include respond-to(smartphone) {
+          width: 4.5vw;
+        }
+      }
+    }
+  }
+}

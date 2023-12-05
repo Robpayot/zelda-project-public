@@ -1,0 +1,60 @@
+.menu {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+
+  opacity: 0;
+  visibility: hidden;
+
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding-right: 50px;
+  margin-top: 50px;
+
+  @include respond-to(smartphone) {
+    padding-right: 25px;
+    margin-top: 25px;
+  }
+
+  @include respond-to(mobile-landscape) {
+    padding-right: 25px;
+    margin-top: 25px;
+  }
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  &__button {
+    color: white;
+    text-shadow: 0 0 5px rgb(0 0 0 / 0.7);
+    transition: transform var(--ease-out-bounce) 0.5s;
+    pointer-events: auto;
+    cursor: pointer;
+    will-change: transform;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    &.hidden {
+      display: none;
+    }
+  }
+
+  &__icon {
+    width: 5vw;
+    pointer-events: none;
+    max-width: 95px;
+
+    @include respond-to(smartphone) {
+      width: 12vw;
+    }
+  }
+
+
+}

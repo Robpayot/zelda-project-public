@@ -1,0 +1,186 @@
+.h2 {
+  font-family: 'Sherwood';
+  // letter-spacing: -0.14rem;
+  font-size: 4.7vw;
+  // text-shadow: 0 0 5px #00000030;
+  color: var(--color-black);
+  line-height: 1em;
+
+  @include responsive-font-size(90, 20, 90);
+
+  @include respond-to(smartphone) {
+    font-size: 9vw;
+  }
+
+  @include respond-to(mobile-landscape) {
+    font-size: 4vw;
+  }
+}
+
+.h3 {
+  font-family: 'ReggaeOne';
+  font-size: 2.3vw;
+  @include responsive-font-size(44, 20, 44);
+
+  @include respond-to(smartphone) {
+    font-size: 5.5vw;
+  }
+}
+
+.h2-reggae {
+  font-family: 'ReggaeOne';
+  font-size: 4vw;
+  color: var(--color-black);
+  @include responsive-font-size(62, 20, 62);
+
+  @include respond-to(smartphone) {
+    font-size: 7vw;
+  }
+}
+
+.h3-reggae {
+  font-family: 'ReggaeOne';
+  font-size: 3vw;
+  color: var(--color-black);
+
+  @include responsive-font-size(40, 25, 50);
+
+  @include respond-to(smartphone) {
+    font-size: 5.5vw;
+  }
+
+  @include respond-to(mobile-landscape) {
+    font-size: 3vw;
+  }
+}
+
+.h4-reggae {
+  font-family: 'ReggaeOne';
+  font-size: 2vw;
+  color: var(--color-black);
+
+  @include responsive-font-size(38, 25, 38);
+
+  @include respond-to(smartphone) {
+    font-size: 6vw;
+  }
+}
+
+.text-1 {
+  font-family: 'RocknRollOne';
+  font-size: 2vw;
+  color: var(--color-black);
+
+  @include responsive-font-size(36, 16, 36);
+
+  @include respond-to(smartphone) {
+    font-size: 4vw;
+  }
+}
+
+.text-2 {
+  font-family: 'RocknRollOne';
+  color: var(--color-black);
+  @include responsive-font-size(28, 12, 28);
+
+  @include respond-to(smartphone) {
+    font-size: 3.5vw;
+  }
+}
+
+.text-3 {
+  font-family: 'RocknRollOne';
+  color: var(--color-black);
+  @include responsive-font-size(18, 11, 18);
+
+  @include respond-to(smartphone) {
+    font-size: 3vw;
+  }
+}
+
+.button,
+.button-small {
+  pointer-events: auto;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.8s var(--ease-out-bounce2);
+
+  &::before,
+  &::after {
+    content: '';
+    height: 2.5vw;
+    width: 2.5vw;
+    background: url(/icons/selectorB.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 50%;
+    opacity: 0;
+    max-width: 50px;
+    max-height: 50px;
+
+    @include respond-to(smartphone) {
+      height: 5.5vw;
+      width: 5.5vw;
+    }
+  }
+
+  &::before {
+    left: 0;
+    transform: scale(1) translate(-150%, -50%);
+    transition: transform 0s var(--ease-out-expo) 0.5s, opacity 0.3s ease;
+  }
+
+  &::after {
+    left: 100%;
+    transform: scale(1) translate(50%, -50%);
+    transition: transform 0s var(--ease-out-expo) 0.3s, opacity 0.3s ease;
+  }
+
+  &:hover {
+    transform: scale(1.1);
+    // will-change: transform;
+    &::before {
+      opacity: 1;
+      transform: scale(1) translate(-150%, -50%);
+      // transition: transform 1s var(--ease-out-expo), opacity 0.5s ease;
+    }
+
+    &::after {
+      opacity: 1;
+      transform: scale(1) translate(50%, -50%);
+      // transition: transform 1s var(--ease-out-expo), opacity 0.5s ease;
+    }
+  }
+}
+
+.button-small {
+  &::before,
+  &::after {
+    height: 2vw;
+    width: 2vw;
+    max-width: 36px;
+    max-height: 36px;
+
+    @include respond-to(smartphone) {
+      height: 4vw;
+      width: 4vw;
+    }
+  }
+}
+
+.keyboard-arrows {
+  width: 5vw;
+  max-width: 96px;
+}
+
+.keyboard-space {
+  width: 3.5vw;
+  max-width: 67px;
+}
+
+.cursor {
+  max-width: 25px;
+  width: 1.3vw;
+  margin: 0 0.6vw -0.3vw;
+}

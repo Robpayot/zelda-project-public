@@ -1,0 +1,51 @@
+html {
+  box-sizing: border-box;
+  // overflow: hidden;
+  overscroll-behavior-y: none;
+  overscroll-behavior-x: none;
+  width: 100%;
+  height: 100%;
+}
+
+*,
+::before,
+::after {
+  box-sizing: inherit;
+}
+
+body {
+  background-color: black;
+  color: white;
+  line-height: 1.3;
+  position: relative;
+  font-family: 'Sherwood', serif;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  overscroll-behavior-y: none;
+  overscroll-behavior-x: none;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  &.is-touch {
+    overflow: hidden;
+    &.is-social {
+      overflow: visible;
+    }
+    .touch-hidden {
+      display: none;
+    }
+  }
+
+  &:not(.is-touch) {
+    .touch-only {
+      display: none;
+    }
+  }
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}

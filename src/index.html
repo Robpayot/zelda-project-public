@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="./scss/style.scss" />
+    <script type="module" defer src="./js/index.js"></script>
+    <title>Wind Waker JS - Robin Payot</title>
+    <!-- meta tags example -->
+    <meta
+      name="description"
+      content="Hi! I'm Robin Payot a creative developer making immersive websites since 2015 and a fan of WebGL. Zelda: The Wind Waker is one of my favorite game and I tried to make the ocean part in JavaScript/WebGL, explore and play!"
+    />
+    <meta name="keywords" content="zelda, wind, waker, js, webgl, threejs, robin, payot, developer" />
+    <meta name="author" content="robin payot, robpayot@gmail.com" />
+    <meta name="developer" content="" />
+    <link rel="canonical" href="https://wind-waker-js.vercel.app/" />
+
+    <!-- socials meta tags -->
+    <meta property="og:title" content="Wind Waker JS - Robin Payot" />
+    <meta
+      property="og:description"
+      content="Hi! I'm Robin Payot a creative developer making immersive websites since 2015 and a fan of WebGL. Zelda: The Wind Waker is one of my favorite game and I tried to make the ocean part in JavaScript/WebGL, explore and play!"
+    />
+    <meta property="og:image" content="https://wind-waker-js.vercel.app/img/social.png" />
+    <meta property="og:url" content="https://wind-waker-js.vercel.app/" />
+    <meta property="og:site_name" content="Wind Waker JS - Robin Payot" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://wind-waker-js.vercel.app/img/social.png" />
+    <meta name="twitter:image:alt" content="Wind Waker JS - Robin Payot" />
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    <link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#5bbad5" />
+    <meta name="msapplication-TileColor" content="#da532c" />
+    <meta name="theme-color" content="#ffffff" />
+  </head>
+  <body>
+    <main>
+      <!-- UI -->
+      <div class="ui">
+        <!-- LOADING -->
+        <div data-loading class="loading visible">
+          <div class="loading__content">
+            <h2 class="loading__title h3">Loading</h2>
+          </div>
+        </div>
+        <!-- SETTINGS -->
+        <div data-settings class="settings visible">
+          <div class="settings__content">
+            <h2 class="settings__title h2">Choose a quality</h2>
+            <div class="separator">
+              <img src="/icons/selector2-alpha.png" alt="" />
+              <span class="separator__line"></span>
+              <img src="/icons/selector2-alpha.png" alt="" />
+            </div>
+            <div class="settings__buttons">
+              <button aria-label="High" data-settings-btn="high" class="settings__button h3-reggae button">High</button>
+              <button aria-label="Medium" data-settings-btn="medium" class="settings__button h3-reggae button">Medium</button>
+              <button aria-label="Low" data-settings-btn="low" class="settings__button h3-reggae button">Low</button>
+            </div>
+          </div>
+        </div>
+        <!-- MODE -->
+        <div data-mode class="mode visible">
+          <div class="mode__content">
+            <h2 class="mode__title h2">Choose a mode</h2>
+            <div class="separator">
+              <img src="/icons/selector2-alpha.png" alt="" />
+              <span class="separator__line"></span>
+              <img src="/icons/selector2-alpha.png" alt="" />
+            </div>
+            <div class="mode__buttons">
+              <!-- Todo add icons after each -->
+              <button aria-label="Explore the Ocean" data-mode-btn="explore" class="mode__button h3-reggae button">
+                <span>Explore the Ocean</span><img class="mode__icon" src="/icons/explore.png" alt="" />
+              </button>
+              <button aria-label="Play Rupee's Game" data-mode-btn="game" class="mode__button h3-reggae button">
+                <span>Rupee's Game</span><img class="mode__icon" src="/icons/rupee_counterG2.png" alt="" />
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- MENU -->
+        <div data-menu class="menu">
+          <button aria-label="Mode" data-menu-btn="mode" class="menu__button h3-reggae">Mode</button>
+          <button aria-label="Link" data-menu-btn="link" class="menu__button h3-reggae">Link</button>
+          <button aria-label="About" data-menu-btn="about" class="menu__button h3-reggae">About</button>
+          <button aria-label="Take screenshot" data-menu-btn="camera" class="menu__button h3-reggae">
+            <img class="menu__icon" src="/icons/camera.png" />
+          </button>
+          <div class="footer touch-only">
+            <div class="separator touch-only">
+              <span class="separator__line"></span>
+            </div>
+            <div>
+              <div class="footer__link">
+                <svg
+                  data-footer-sound-touch
+                  class="footer__icon footer__sound active"
+                  width="256.57"
+                  height="272.49"
+                  viewBox="0 0 256.57 272.49"
+                >
+                  <defs>
+                    <style>
+                      .cls-1-sound {
+                        stroke-linecap: round;
+                        stroke-linejoin: round;
+                      }
+                      .cls-1-sound,
+                      .cls-2-sound,
+                      .cls-3 {
+                        fill: none;
+                        stroke: #231f20;
+                      }
+                      .cls-1-sound,
+                      .cls-3-sound {
+                        stroke-width: 6px;
+                      }
+                      .cls-2-sound {
+                        stroke-width: 9px;
+                      }
+                      .cls-2-sound,
+                      .cls-3-sound {
+                        stroke-miterlimit: 10;
+                      }
+                    </style>
+                  </defs>
+                  <rect class="cls-1-sound" x="10.05" y="83.75" width="50.32" height="105.73" />
+                  <polygon
+                    class="cls-3-sound"
+                    points="153.9 242.83 61.19 190.98 59.73 84.77 150.99 30.4 153.9 242.83"
+                  />
+                  <path
+                    class="cls-1-sound sound-echo"
+                    d="m176.23,50.69c8.12,5.49,37.34,31.85,37.34,83.48s-26.47,77.53-34.68,87.64"
+                  />
+                  <path
+                    class="cls-1-sound sound-echo"
+                    d="m192.23,19.66c13.14,7.57,60.46,43.93,60.46,115.13s-42.86,106.94-56.14,120.87"
+                  />
+                  <path class="cls-2-sound sound-line" d="m189.12,269.44L3.61,2.69" />
+                </svg>
+              </div>
+              <a href="https://www.youtube.com/@howtocodethat_" target="_blank" rel="noopener" class="footer__link">
+                <svg class="footer__icon" xmlns="http://www.w3.org/2000/svg" width="56" height="40" viewBox="0 0 56 40">
+                  <path
+                    d="m53.12,2.86c2.55,2.65,2.88,6.85,2.88,17.14s-.33,14.5-2.88,17.14c-2.55,2.65-5.21,2.86-25.12,2.86s-22.56-.21-25.11-2.86C.33,34.5,0,30.29,0,20S.33,5.5,2.89,2.86,8.09,0,28,0s22.56.21,25.12,2.86Zm-29.65,25.62l13.6-8.04-13.6-7.92v15.96Z"
+                  />
+                </svg>
+              </a>
+              <a href="https://twitter.com/RobinPayot" target="_blank" rel="noopener" class="footer__link">
+                <svg class="footer__icon" id="svg5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000.78 936.69">
+                  <g id="layer1">
+                    <path
+                      id="path1009"
+                      d="m2.44,0l386.39,516.64L0,936.69h87.51l340.42-367.76,275.05,367.76h297.8l-408.13-545.7L954.57,0h-87.51l-313.51,338.7L300.24,0H2.44Zm128.69,64.46h136.81l604.13,807.76h-136.81L131.13,64.46Z"
+                    />
+                  </g>
+                </svg>
+              </a>
+              <a href="https://github.com/Robpayot" target="_blank" rel="noopener" class="footer__link">
+                <svg
+                  class="footer__icon"
+                  id="Layer_1"
+                  data-name="Layer 1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 32.58 31.77"
+                >
+                  <path
+                    d="M16.29,0a16.29,16.29,0,0,0-5.15,31.75c.82.15,1.11-.36,1.11-.79s0-1.41,0-2.77C7.7,29.18,6.74,26,6.74,26a4.36,4.36,0,0,0-1.81-2.39c-1.47-1,.12-1,.12-1a3.43,3.43,0,0,1,2.49,1.68,3.48,3.48,0,0,0,4.74,1.36,3.46,3.46,0,0,1,1-2.18c-3.62-.41-7.42-1.81-7.42-8a6.3,6.3,0,0,1,1.67-4.37,5.94,5.94,0,0,1,.16-4.31s1.37-.44,4.48,1.67a15.41,15.41,0,0,1,8.16,0c3.11-2.11,4.47-1.67,4.47-1.67A5.91,5.91,0,0,1,25,11.07a6.3,6.3,0,0,1,1.67,4.37c0,6.26-3.81,7.63-7.44,8a3.85,3.85,0,0,1,1.11,3c0,2.18,0,3.94,0,4.47s.29.94,1.12.78A16.29,16.29,0,0,0,16.29,0Z"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div data-about class="about">
+          <p class="about__text text-2">
+            Hi! I'm
+            <a href="https://robinpayot.com/" target="_blank">Robin Payot</a>, a creative developer making immersive
+            websites since 2015 and a fan of WebGL.
+            <a href="https://en.wikipedia.org/wiki/The_Legend_of_Zelda:_The_Wind_Waker" target="_blank"
+              >Zelda: The Wind Waker</a
+            >
+            is one of my favorite game and I tried to remake the ocean part of it using
+            <a href="https://github.com/mrdoob/three.js/" target="blank">Three.js</a> I hope you'll like the result!
+          </p>
+          <p class="about__title h3">Credits:</p>
+          <div class="separator">
+            <img src="/icons/selector2-alpha.png" alt="" />
+            <span class="separator__line"></span>
+            <img src="/icons/selector2-alpha.png" alt="" />
+          </div>
+          <p class="about__text about__text-list text-2">Nintendo for these wonderful assets</p>
+          <p class="about__text about__text-list text-2">
+            The amazing Nathan Gordon posted
+            <a href="https://medium.com/@gordonnl/wind-waker-graphics-analysis-a0b575a31127" target="_blank"
+              >articles</a
+            >
+            some times ago about making aspects of the game in JavaScript, his articles helped me a lot to make the
+            waves and the wind!
+          </p>
+          <p class="about__text about__text-list text-2">
+            3D models of the game found
+            <a href="https://github.com/LagoLunatic/ww_model_helpers" target="_blank">there</a>
+          </p>
+          <p class="about__text about__text-list text-2">
+            Textures of the game found
+            <a
+              href="https://forums.dolphin-emu.org/Thread-hypatia-s-tloz-the-wind-waker-hd-pack-v2-0001a"
+              target="_blank"
+              >there</a
+            >
+          </p>
+          <p class="about__text about__text-list text-2">
+            Musics and sounds of the game found
+            <a
+              href="https://downloads.khinsider.com/game-soundtracks/album/legend-of-zelda-takt-of-wind-original-sound-tracks"
+              target="_blank"
+              >there</a
+            >
+            and
+            <a href="https://noproblo.dayjo.org/ZeldaSounds/WW_New/index.html" target="_blank">there</a>
+          </p>
+          <div class="separator">
+            <img src="/icons/selector2-alpha.png" alt="" />
+            <span class="separator__line"></span>
+            <img src="/icons/selector2-alpha.png" alt="" />
+          </div>
+          <button aria-label="Close" data-about-btn="about" class="about__button h3-reggae button">Close</button>
+        </div>
+        <!-- Game -->
+        <div data-game class="game">
+          <div class="game__overlay">
+            <h2 class="game__overlay__title h2-reggae">Catch a maximum of rupees!</h2>
+            <p class="game__overlay__text text-1 touch-hidden">
+              Use left and right arrows to navigate
+              <svg
+                class="keyboard-arrows"
+                id="Layer_1"
+                data-name="Layer 1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 79.9 52.2"
+              >
+                <defs>
+                  <style>
+                    .cls-1 {
+                      opacity: 0.1;
+                    }
+                  </style>
+                </defs>
+                <path
+                  class="cls-1"
+                  d="m52.2,5.8c0-3.2-2.6-5.8-5.8-5.8h-13c-3.2,0-5.8,2.6-5.8,5.8v13c0,3.2,2.6,5.8,5.8,5.8h13c3.2,0,5.8-2.6,5.8-5.8V5.8Zm-2.8,13c0,1.6-1.3,2.9-2.9,2.9h-13.1c-1.6,0-2.9-1.3-2.9-2.9V5.7c0-1.6,1.3-2.9,2.9-2.9h13.1c1.6,0,2.9,1.3,2.9,2.9v13.1Z"
+                />
+                <polygon class="cls-1" points="36.3 13 43.5 13 39.9 5.8 36.3 13" />
+                <path
+                  d="m24.6,33.4c0-3.2-2.6-5.8-5.8-5.8H5.8c-3.2,0-5.8,2.6-5.8,5.8v13c0,3.2,2.6,5.8,5.8,5.8h13c3.2,0,5.8-2.6,5.8-5.8v-13Zm-2.8,13.1c0,1.6-1.3,2.9-2.9,2.9H5.8c-1.6,0-2.9-1.3-2.9-2.9v-13.1c0-1.6,1.3-2.9,2.9-2.9h13.1c1.6,0,2.9,1.3,2.9,2.9v13.1Z"
+                />
+                <polygon points="15.9 40.7 15.9 33.4 8.6 37.1 15.9 40.7" />
+                <path
+                  class="cls-1"
+                  d="m52.2,33.4c0-3.2-2.6-5.8-5.8-5.8h-13c-3.2,0-5.8,2.6-5.8,5.8v13c0,3.2,2.6,5.8,5.8,5.8h13c3.2,0,5.8-2.6,5.8-5.8v-13Zm-2.8,13.1c0,1.6-1.3,2.9-2.9,2.9h-13.1c-1.6,0-2.9-1.3-2.9-2.9v-13.1c0-1.6,1.3-2.9,2.9-2.9h13.1c1.6,0,2.9,1.3,2.9,2.9v13.1Z"
+                />
+                <polygon class="cls-1" points="39.9 40.7 43.5 33.4 36.3 33.4 39.9 40.7" />
+                <path
+                  d="m79.9,33.4c0-3.2-2.6-5.8-5.8-5.8h-13c-3.2,0-5.8,2.6-5.8,5.8v13c0,3.2,2.6,5.8,5.8,5.8h13c3.2,0,5.8-2.6,5.8-5.8v-13Zm-2.9,13.1c0,1.6-1.3,2.9-2.9,2.9h-13.1c-1.6,0-2.9-1.3-2.9-2.9v-13.1c0-1.6,1.3-2.9,2.9-2.9h13.1c1.6,0,2.9,1.3,2.9,2.9v13.1Z"
+                />
+                <polygon points="63.9 40.7 71.2 37.1 63.9 33.4 63.9 40.7" />
+              </svg>
+              and press the spacebar
+              <svg
+                class="keyboard-space"
+                id="Layer_1"
+                data-name="Layer 1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 52.2 17.52"
+              >
+                <path
+                  d="m2.94,0l-.04,11.82s.13,2.9,2.9,2.9h27.6l13.6-.05s2.4-.09,2.4-3.25V0h2.8v11.72s.22,5.07-5.13,5.76l-41.27.04s-5.8-.17-5.8-5.8S.1,0,.1,0h2.84Z"
+                />
+              </svg>
+              to avoid obstacles!
+            </p>
+            <p class="game__overlay__text text-1 touch-only">
+              Use the left and right buttons to navigate, press the center button to jump over obstacles!
+            </p>
+            <button aria-label="Ok" data-game-start class="h3-reggae button">Ok</button>
+          </div>
+          <div data-game-end class="game__end">
+            <div class="game__end__content">
+              <img data-game-end-img src="#" class="game__end__img" />
+              <div class="game__end__screenshot">
+                <p class="game__end__title h2-reggae">Congrats!</p>
+                <p class="game__end__text h3">Your score: <span data-game-end-score></span></p>
+                <p class="game__end__text h3">Best score: <span data-game-end-best>0</span></p>
+              </div>
+              <div class="separator">
+                <img src="/icons/selector2-alpha.png" alt="" />
+                <span class="separator__line"></span>
+                <img src="/icons/selector2-alpha.png" alt="" />
+              </div>
+              <a
+                data-game-end-dl
+                href="#"
+                download="best-score-wind-waker-js.png"
+                class="game__end__dl h4-reggae button"
+                >Download my score
+              </a>
+              <button aria-label="Share on X" data-game-end-share-x class="game__end__share h4-reggae button">
+                <span>Share on</span>
+                <svg class="game__end__icon" id="svg5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000.78 936.69">
+                  <g id="layer1">
+                    <path
+                      id="path1009"
+                      d="m2.44,0l386.39,516.64L0,936.69h87.51l340.42-367.76,275.05,367.76h297.8l-408.13-545.7L954.57,0h-87.51l-313.51,338.7L300.24,0H2.44Zm128.69,64.46h136.81l604.13,807.76h-136.81L131.13,64.46Z"
+                    />
+                  </g>
+                </svg>
+              </button>
+              <button aria-label="Share on Facebook" data-game-end-share-fb class="game__end__share h4-reggae button">
+                <span>Share on</span>
+                <svg
+                  class="game__end__icon"
+                  version="1.1"
+                  id="Layer_1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  x="0px"
+                  y="0px"
+                  viewBox="73 0 267 266.9"
+                  enable-background="new 73 0 267 266.9"
+                  xml:space="preserve"
+                >
+                  <path
+                    id="Blue_1_"
+                    fill="color"
+                    d="M321.1,262.3c7.9,0,14.2-6.4,14.2-14.2V18.8c0-7.9-6.4-14.2-14.2-14.2H91.8
+    C84,4.6,77.6,11,77.6,18.8v229.3c0,7.9,6.4,14.2,14.2,14.2H321.1z"
+                  />
+                  <path
+                    id="f"
+                    fill="transparent"
+                    d="M255.4,262.3v-99.8h33.5l5-38.9h-38.5V98.8c0-11.3,3.1-18.9,19.3-18.9l20.6,0V45
+    c-3.6-0.5-15.8-1.5-30-1.5c-29.7,0-50,18.1-50,51.4v28.7h-33.6v38.9h33.6v99.8H255.4z"
+                  />
+                </svg>
+              </button>
+              <div class="separator">
+                <img src="/icons/selector2-alpha.png" alt="" />
+                <span class="separator__line"></span>
+                <img src="/icons/selector2-alpha.png" alt="" />
+              </div>
+              <button aria-label="Retry" data-game-end-retry class="h3-reggae button">Retry</button>
+            </div>
+          </div>
+          <div class="hud">
+            <div data-hearts class="hud__hearts"></div>
+            <div class="hud__rupees">
+              <img class="hud__rupees__logo" src="/icons/rupee_counterG2.png" alt="" />
+              <div data-rupees-numbers class="hud__rupees__numbers"></div>
+            </div>
+            <div class="hud__best">
+              <div class="hud__best__text h3">Best score: <span data-rupees-best class="hud__best__score">0</span></div>
+            </div>
+            <div class="separator">
+              <img src="/icons/selector2-alpha.png" alt="" />
+              <span class="separator__line"></span>
+              <img src="/icons/selector2-alpha.png" alt="" />
+            </div>
+            <div data-hud-rupee-list class="hud__rupee-list">
+              <div class="hud__rupee-list__row">
+                <img class="hud__rupees__logo" src="/icons/rupee_counterG2.png" alt="" />
+              </div>
+              <div class="hud__rupee-list__row">
+                <img class="hud__rupees__logo" src="/icons/rupee_counter_2.png" alt="" />
+              </div>
+              <div class="hud__rupee-list__row">
+                <img class="hud__rupees__logo" src="/icons/rupee_counter_3.png" alt="" />
+              </div>
+              <div class="hud__rupee-list__row">
+                <img class="hud__rupees__logo" src="/icons/rupee_counter_4.png" alt="" />
+              </div>
+              <div class="hud__rupee-list__row">
+                <img class="hud__rupees__logo" src="/icons/rupee_counter_5.png" alt="" />
+              </div>
+              <div class="hud__rupee-list__row">
+                <img class="hud__rupees__logo" src="/icons/rupee_counter_6.png" alt="" />
+              </div>
+              <div class="hud__rupee-list__row">
+                <img class="hud__rupees__logo" src="/icons/rupee_counter_7.png" alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Explore -->
+        <div data-explore class="explore">
+          <div class="explore__overlay">
+            <h2 class="explore__overlay__title h2-reggae">Explore the ocean</h2>
+            <p class="explore__overlay__text text-1 touch-hidden">
+              Use the arrow keys to navigate
+              <svg
+                class="keyboard-arrows"
+                id="Layer_1"
+                data-name="Layer 1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 79.9 52.2"
+              >
+                <path
+                  d="m52.2,5.8c0-3.2-2.6-5.8-5.8-5.8h-13c-3.2,0-5.8,2.6-5.8,5.8v13c0,3.2,2.6,5.8,5.8,5.8h13c3.2,0,5.8-2.6,5.8-5.8V5.8Zm-2.8,13c0,1.6-1.3,2.9-2.9,2.9h-13.1c-1.6,0-2.9-1.3-2.9-2.9V5.7c0-1.6,1.3-2.9,2.9-2.9h13.1c1.6,0,2.9,1.3,2.9,2.9v13.1Z"
+                />
+                <polygon points="36.3 13 43.5 13 39.9 5.8 36.3 13" />
+                <path
+                  d="m24.6,33.4c0-3.2-2.6-5.8-5.8-5.8H5.8c-3.2,0-5.8,2.6-5.8,5.8v13c0,3.2,2.6,5.8,5.8,5.8h13c3.2,0,5.8-2.6,5.8-5.8v-13Zm-2.8,13.1c0,1.6-1.3,2.9-2.9,2.9H5.8c-1.6,0-2.9-1.3-2.9-2.9v-13.1c0-1.6,1.3-2.9,2.9-2.9h13.1c1.6,0,2.9,1.3,2.9,2.9v13.1Z"
+                />
+                <polygon points="15.9 40.7 15.9 33.4 8.6 37.1 15.9 40.7" />
+                <path
+                  d="m52.2,33.4c0-3.2-2.6-5.8-5.8-5.8h-13c-3.2,0-5.8,2.6-5.8,5.8v13c0,3.2,2.6,5.8,5.8,5.8h13c3.2,0,5.8-2.6,5.8-5.8v-13Zm-2.8,13.1c0,1.6-1.3,2.9-2.9,2.9h-13.1c-1.6,0-2.9-1.3-2.9-2.9v-13.1c0-1.6,1.3-2.9,2.9-2.9h13.1c1.6,0,2.9,1.3,2.9,2.9v13.1Z"
+                />
+                <polygon points="39.9 40.7 43.5 33.4 36.3 33.4 39.9 40.7" />
+                <path
+                  d="m79.9,33.4c0-3.2-2.6-5.8-5.8-5.8h-13c-3.2,0-5.8,2.6-5.8,5.8v13c0,3.2,2.6,5.8,5.8,5.8h13c3.2,0,5.8-2.6,5.8-5.8v-13Zm-2.9,13.1c0,1.6-1.3,2.9-2.9,2.9h-13.1c-1.6,0-2.9-1.3-2.9-2.9v-13.1c0-1.6,1.3-2.9,2.9-2.9h13.1c1.6,0,2.9,1.3,2.9,2.9v13.1Z"
+                />
+                <polygon points="63.9 40.7 71.2 37.1 63.9 33.4 63.9 40.7" />
+              </svg>
+              and press the spacebar
+              <svg
+                class="keyboard-space"
+                id="Layer_1"
+                data-name="Layer 1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 52.2 17.52"
+              >
+                <path
+                  d="m2.94,0l-.04,11.82s.13,2.9,2.9,2.9h27.6l13.6-.05s2.4-.09,2.4-3.25V0h2.8v11.72s.22,5.07-5.13,5.76l-41.27.04s-5.8-.17-5.8-5.8S.1,0,.1,0h2.84Z"
+                />
+              </svg>
+              to avoid obstacles!
+            </p>
+            <p class="explore__overlay__text text-1 touch-hidden">
+              <svg
+                class="cursor"
+                id="Layer_1"
+                data-name="Layer 1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 13.25 19.74"
+              >
+                <path
+                  d="m13.01,8.02L.82.09C.66-.02.45-.03.28.06c-.17.09-.28.27-.28.47v14.65c0,.2.11.39.3.48.18.09.4.07.56-.06l3.41-2.62,3.52,6.47c.1.18.28.28.47.28.09,0,.17-.02.25-.07l3.74-2.03c.26-.14.35-.46.21-.72l-3.52-6.48,3.96-1.47c.19-.07.32-.24.34-.44.02-.2-.07-.39-.24-.5Zm-5.02,1.63c-.15.05-.26.17-.31.31-.05.15-.04.31.03.44l3.56,6.55-2.81,1.52-3.56-6.55c-.07-.14-.2-.23-.36-.27-.04,0-.07-.01-.11-.01-.12,0-.23.04-.32.11l-3.04,2.34V1.52l10.48,6.82-3.55,1.32Z"
+                /></svg
+              >Click and drag anywhere to move the camera and scroll to zoom
+            </p>
+            <p class="game__overlay__text text-1 touch-only">
+              Use the joystick to navigate, press the left button to jump over obstacles!
+            </p>
+            <p class="game__overlay__text text-1 touch-only">
+              Touch and move anywhere else to rotate the camera and pinch to zoom
+            </p>
+            <button aria-label="OK" data-explore-start class="h3-reggae button">Ok</button>
+          </div>
+          <!-- island titles -->
+          <div data-explore-islands class="explore__islands">
+            <img src="/img/islands/island_0.png" class="explore__islands__item" alt="Forsaken Fortress" />
+            <img src="/img/islands/island_1.png" class="explore__islands__item" alt="Windfall Island" />
+            <img src="/img/islands/island_2.png" class="explore__islands__item" alt="Tower of the Gods" />
+            <img src="/img/islands/island_3.png" class="explore__islands__item" alt="Dragon Roost Island" />
+            <img src="/img/islands/island_4.png" class="explore__islands__item" alt="Forest Haven" />
+            <img src="/img/islands/island_5.png" class="explore__islands__item" alt="Outset Island" />
+          </div>
+          <div data-explore-to-close class="explore__too-close h3-reggae">Too close!</div>
+          <div class="hud">
+            <div data-explore-hearts class="hud__hearts"></div>
+            <div class="hud__rupees">
+              <img class="hud__rupees__logo" src="/icons/rupee_counterG2.png" alt="" />
+              <div data-explore-rupees-numbers class="hud__rupees__numbers"></div>
+            </div>
+            <div class="hud__compass">
+              <img data-compass-bkg src="/icons/compass-bkg.png" alt="" class="hud__compass-bkg" />
+              <img src="/icons/compass-front.png" alt="" class="hud__compass-front" />
+            </div>
+          </div>
+
+          <div class="explore__link">
+            <div class="explore__link__content">
+              <h3 class="explore__link__title h3">Custom link face:</h3>
+              <div class="separator">
+                <img src="/icons/selector2-alpha.png" alt="" />
+                <span class="separator__line"></span>
+                <img src="/icons/selector2-alpha.png" alt="" />
+              </div>
+              <div class="explore__link__item text-2">
+                <span>Mouth:</span>
+                <div class="explore__link__count">
+                  <span data-mouth-left class="explore__link__chevron">&lsaquo;</span><span data-mouth-number>1</span
+                  ><span class="explore__link__chevron" data-mouth-right>&rsaquo;</span>
+                </div>
+              </div>
+              <div class="explore__link__item text-2">
+                <span>Eye left:</span>
+                <div class="explore__link__count">
+                  <span data-eye-left-left class="explore__link__chevron">&lsaquo;</span
+                  ><span data-eye-left-number>1</span
+                  ><span class="explore__link__chevron" data-eye-left-right>&rsaquo;</span>
+                </div>
+              </div>
+              <div class="explore__link__item text-2">
+                <span>Eye right:</span>
+                <div class="explore__link__count">
+                  <span data-eye-right-left class="explore__link__chevron">&lsaquo;</span
+                  ><span data-eye-right-number>1</span
+                  ><span class="explore__link__chevron" data-eye-right-right>&rsaquo;</span>
+                </div>
+              </div>
+              <div class="separator">
+                <img src="/icons/selector2-alpha.png" alt="" />
+                <span class="separator__line"></span>
+                <img src="/icons/selector2-alpha.png" alt="" />
+              </div>
+              <button aria-label="Close" data-link-btn class="explore__link__close h4-reggae button-small">Close</button>
+            </div>
+          </div>
+        </div>
+        <!-- Joystick -->
+        <div data-joystick class="joystick">
+          <button aria-label="joystick" class="joystick__stick">
+            <div class="joystick__stick__img" data-joystick-stick></div>
+          </button>
+          <button aria-label="go left" data-joystick-left class="joystick__left">
+            <img data-joystick-stick src="/icons/arrow2.png" alt="" />
+          </button>
+          <button aria-label="go right" data-joystick-right class="joystick__right">
+            <img data-joystick-stick src="/icons/arrow2.png" alt="" />
+          </button>
+        </div>
+        <div class="jump-button">
+          <button aria-label="jump" data-jump-button class="jump-button__content">
+            <span class="jump-button__text">Jump</span>
+          </button>
+        </div>
+        <!-- Screenshot overlay -->
+        <div data-screenshot class="screenshot">
+          <img href="#" data-screenshot-img class="screenshot__img" />
+          <div class="screenshot__content">
+            <div class="screenshot__text text-3">
+              Feel free to download the image and share it in your fav' social media!
+            </div>
+            <div class="separator">
+              <img src="/icons/selector2-alpha.png" alt="" />
+              <span class="separator__line"></span>
+              <img src="/icons/selector2-alpha.png" alt="" />
+            </div>
+            <a data-screenshot-download href="#" download="wind-waker-js.png" class="screenshot__dl h4-reggae button"
+              >Download
+            </a>
+            <button aria-label="Share on X" data-screenshot-share-x class="screenshot__share h4-reggae button">
+              <span>Share on</span>
+              <svg class="screenshot__icon" id="svg5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000.78 936.69">
+                <g id="layer1">
+                  <path
+                    id="path1009"
+                    d="m2.44,0l386.39,516.64L0,936.69h87.51l340.42-367.76,275.05,367.76h297.8l-408.13-545.7L954.57,0h-87.51l-313.51,338.7L300.24,0H2.44Zm128.69,64.46h136.81l604.13,807.76h-136.81L131.13,64.46Z"
+                  />
+                </g>
+              </svg>
+            </button>
+            <button aria-label="Share on Facebook" data-screenshot-share-fb class="screenshot__share h4-reggae button">
+              <span>Share on</span>
+              <svg
+                class="screenshot__icon"
+                version="1.1"
+                id="Layer_1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px"
+                y="0px"
+                viewBox="73 0 267 266.9"
+                enable-background="new 73 0 267 266.9"
+                xml:space="preserve"
+              >
+                <path
+                  id="Blue_1_"
+                  fill="color"
+                  d="M321.1,262.3c7.9,0,14.2-6.4,14.2-14.2V18.8c0-7.9-6.4-14.2-14.2-14.2H91.8
+	C84,4.6,77.6,11,77.6,18.8v229.3c0,7.9,6.4,14.2,14.2,14.2H321.1z"
+                />
+                <path
+                  id="f"
+                  fill="transparent"
+                  d="M255.4,262.3v-99.8h33.5l5-38.9h-38.5V98.8c0-11.3,3.1-18.9,19.3-18.9l20.6,0V45
+	c-3.6-0.5-15.8-1.5-30-1.5c-29.7,0-50,18.1-50,51.4v28.7h-33.6v38.9h33.6v99.8H255.4z"
+                />
+              </svg>
+            </button>
+            <div class="separator">
+              <img src="/icons/selector2-alpha.png" alt="" />
+              <span class="separator__line"></span>
+              <img src="/icons/selector2-alpha.png" alt="" />
+            </div>
+            <button aria-label="Close" data-screenshot-btn class="screenshot__close h4-reggae button-small">Close</button>
+          </div>
+        </div>
+        <div class="footer touch-hidden">
+          <div class="footer__link">
+            <svg
+              data-footer-sound
+              class="footer__icon footer__sound active"
+              width="256.57"
+              height="272.49"
+              viewBox="0 0 256.57 272.49"
+            >
+              <defs>
+                <style>
+                  .cls-1-sound {
+                    stroke-linecap: round;
+                    stroke-linejoin: round;
+                  }
+                  .cls-1-sound,
+                  .cls-2-sound,
+                  .cls-3 {
+                    fill: none;
+                    stroke: #231f20;
+                  }
+                  .cls-1-sound,
+                  .cls-3-sound {
+                    stroke-width: 6px;
+                  }
+                  .cls-2-sound {
+                    stroke-width: 9px;
+                  }
+                  .cls-2-sound,
+                  .cls-3-sound {
+                    stroke-miterlimit: 10;
+                  }
+                </style>
+              </defs>
+              <rect class="cls-1-sound" x="10.05" y="83.75" width="50.32" height="105.73" />
+              <polygon class="cls-3-sound" points="153.9 242.83 61.19 190.98 59.73 84.77 150.99 30.4 153.9 242.83" />
+              <path
+                class="cls-1-sound sound-echo"
+                d="m176.23,50.69c8.12,5.49,37.34,31.85,37.34,83.48s-26.47,77.53-34.68,87.64"
+              />
+              <path
+                class="cls-1-sound sound-echo"
+                d="m192.23,19.66c13.14,7.57,60.46,43.93,60.46,115.13s-42.86,106.94-56.14,120.87"
+              />
+              <path class="cls-2-sound sound-line" d="m189.12,269.44L3.61,2.69" />
+            </svg>
+          </div>
+          <a href="https://www.youtube.com/@howtocodethat_" target="_blank" rel="noopener" class="footer__link">
+            <svg class="footer__icon" xmlns="http://www.w3.org/2000/svg" width="56" height="40" viewBox="0 0 56 40">
+              <path
+                d="m53.12,2.86c2.55,2.65,2.88,6.85,2.88,17.14s-.33,14.5-2.88,17.14c-2.55,2.65-5.21,2.86-25.12,2.86s-22.56-.21-25.11-2.86C.33,34.5,0,30.29,0,20S.33,5.5,2.89,2.86,8.09,0,28,0s22.56.21,25.12,2.86Zm-29.65,25.62l13.6-8.04-13.6-7.92v15.96Z"
+              />
+            </svg>
+          </a>
+          <a href="https://twitter.com/RobinPayot" target="_blank" rel="noopener" class="footer__link">
+            <svg class="footer__icon" id="svg5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000.78 936.69">
+              <g id="layer1">
+                <path
+                  id="path1009"
+                  d="m2.44,0l386.39,516.64L0,936.69h87.51l340.42-367.76,275.05,367.76h297.8l-408.13-545.7L954.57,0h-87.51l-313.51,338.7L300.24,0H2.44Zm128.69,64.46h136.81l604.13,807.76h-136.81L131.13,64.46Z"
+                />
+              </g>
+            </svg>
+          </a>
+          <a href="https://github.com/Robpayot" target="_blank" rel="noopener" class="footer__link">
+            <svg
+              class="footer__icon"
+              id="Layer_1"
+              data-name="Layer 1"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 32.58 31.77"
+            >
+              <path
+                d="M16.29,0a16.29,16.29,0,0,0-5.15,31.75c.82.15,1.11-.36,1.11-.79s0-1.41,0-2.77C7.7,29.18,6.74,26,6.74,26a4.36,4.36,0,0,0-1.81-2.39c-1.47-1,.12-1,.12-1a3.43,3.43,0,0,1,2.49,1.68,3.48,3.48,0,0,0,4.74,1.36,3.46,3.46,0,0,1,1-2.18c-3.62-.41-7.42-1.81-7.42-8a6.3,6.3,0,0,1,1.67-4.37,5.94,5.94,0,0,1,.16-4.31s1.37-.44,4.48,1.67a15.41,15.41,0,0,1,8.16,0c3.11-2.11,4.47-1.67,4.47-1.67A5.91,5.91,0,0,1,25,11.07a6.3,6.3,0,0,1,1.67,4.37c0,6.26-3.81,7.63-7.44,8a3.85,3.85,0,0,1,1.11,3c0,2.18,0,3.94,0,4.47s.29.94,1.12.78A16.29,16.29,0,0,0,16.29,0Z"
+              />
+            </svg>
+          </a>
+        </div>
+      </div>
+      <!-- Scene -->
+      <canvas class="scene"></canvas>
+      <div data-cookie class="cookie">
+        <div class="cookie__content">
+          <div class="cookie__text h3">Using cookie</div>
+          <button aria-label="Accept cookie" data-cookie-button class="cookie__button text-2">Ok</button>
+          <button aria-label="Refuse cookie" data-cookie-button-no class="cookie__no text-2">no</button>
+        </div>
+      </div>
+    </main>
+    <script>
+      // Define dataLayer and the gtag function.
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+
+      // Default analytics_storage to 'denied' as a placeholder
+      // Determine actual values based on your own requirements
+      gtag('consent', 'default', {
+        analytics_storage: 'denied',
+      })
+    </script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FCMHJ31YEP"></script>
+    <script>
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag('js', new Date())
+
+      gtag('config', 'G-FCMHJ31YEP')
+    </script>
+    <!-- Update this section based on your business requirements. -->
+    <script>
+      function consentGranted() {
+        gtag('consent', 'update', {
+          analytics_storage: 'granted',
+        })
+      }
+    </script>
+  </body>
+</html>

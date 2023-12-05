@@ -1,0 +1,54 @@
+[
+  {
+    "rupeesMat": [0],
+    "types": [0, 0, 0, 1, 1]
+  },
+  {
+    "rupeesMat": [0],
+    "types": [0, 0, 0, 1, 1]
+  },
+  {
+    "rupeesMat": [1],
+    "types": [0, 1, 2, 2, 2, 3]
+  },
+  {
+    "rupeesMat": [1],
+    "types": [0, 1, 2, 2, 2, 3]
+  },
+  {
+    "rupeesMat": [2],
+    "types": [1, 2, 2, 2, 3]
+  },
+  {
+    "rupeesMat": [2],
+    "types": [1, 2, 2, 2, 3]
+  },
+  {
+    "rupeesMat": [3],
+    "types": [1, 2, 2, 2, 3, 4]
+  },
+  {
+    "rupeesMat": [3],
+    "types": [1, 2, 2, 2, 3, 4]
+  },
+  {
+    "rupeesMat": [4],
+    "types": [2, 2, 2, 4, 4, 3, 4]
+  },
+  {
+    "rupeesMat": [4],
+    "types": [2, 2, 2, 4, 4, 3, 4]
+  },
+  {
+    "rupeesMat": [5],
+    "types": [2, 2, 4, 4, 4, 3, 4]
+  },
+  {
+    "rupeesMat": [5],
+    "types": [2, 2, 4, 4, 4, 3, 4]
+  },
+  {
+    "rupeesMat": [6],
+    "types": [2, 4, 4, 4, 4, 3, 4]
+  }
+]
