@@ -7,6 +7,8 @@
 This took me some time and hard work to make so any support would be very appreciated 🙏🏻 [tutorials webgl channel](https://www.patreon.com/user?u=50160165)
 Enjoy!
 
+You can check the youtube video explaining all the methods I used for this project 👀 [youtube video](https://youtu.be/IyAOCwUWkNE)
+
 ## How to install
 
 Clone the repository or download it in zip format, then
