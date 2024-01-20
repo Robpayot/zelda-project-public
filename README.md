@@ -2,7 +2,7 @@
 ![wind-waker-js (3)](https://github.com/Robpayot/zelda-project-public/assets/5593293/0353b1c6-8834-42c0-a01d-93222625ad2a)
 
 
-# Zelda Wind Waker in JavaScript (Ocean part) - Meant to be a personal project
+# Zelda Wind Waker in JavaScript (Ocean part) - Meant to be a personal project at first
 
 This took me some time and hard work to make so any support would be very appreciated 🙏🏻 [tutorials webgl channel](https://www.patreon.com/user?u=50160165)
 Enjoy!
