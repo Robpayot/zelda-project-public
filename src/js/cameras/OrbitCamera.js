@@ -2,11 +2,20 @@
 import { PerspectiveCamera, Vector3 } from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { EventBusSingleton } from 'light-event-bus'
-import { CAMERA_FOLLOW, END_CAMERA_LINK, MODE, START_CAMERA_LINK, START_TOUCH } from '../utils/constants'
+import {
+  CAMERA_FOLLOW,
+  CLOSE_TREASURE,
+  END_CAMERA_LINK,
+  MODE,
+  START_CAMERA_LINK,
+  START_CAMERA_TREASURE_FOUND,
+  START_TOUCH,
+} from '../utils/constants'
 import gsap from 'gsap'
 import ControllerManager from '../managers/ControllerManager'
 import { degToRad, lerp } from 'three/src/math/MathUtils'
 import Settings from '../utils/Settings'
+import CinematicManager from '../managers/CinematicManager'
 
 // Constants
 const DEFAULT_POSITION = new Vector3(50, 20, 0)
@@ -22,6 +31,10 @@ export default class OrbitCamera {
   #instance
   #controls
   #settings
+  // camera pos for Treasure found
+  #distanceTreasure = 45
+  #initAngleTreasure = degToRad(-90)
+  #initYTreasure = 50
   followX = 0
   followZ = 0
   controlTargetX = 0
@@ -51,6 +64,8 @@ export default class OrbitCamera {
     EventBusSingleton.subscribe(END_CAMERA_LINK, this.leaveLink)
     EventBusSingleton.subscribe(CAMERA_FOLLOW, this.cameraFollow)
     EventBusSingleton.subscribe(START_TOUCH, this.resetCameraFollow)
+    EventBusSingleton.subscribe(START_CAMERA_TREASURE_FOUND, this.cinematicTreasureFound)
+    EventBusSingleton.subscribe(CLOSE_TREASURE, this.cinematicTreasureFoundReset)
   }
 
   /**
@@ -224,6 +239,70 @@ export default class OrbitCamera {
         },
       })
     }
+  }
+
+  cinematicTreasureFound = (angleDir) => {
+    this.lastAngleDir = angleDir
+    this.#controls.enabled = false
+
+    const targetX = -this.#distanceTreasure * Math.cos(angleDir - this.#initAngleTreasure)
+    const targetZ = this.#distanceTreasure * Math.sin(angleDir - this.#initAngleTreasure)
+
+    this.#instance.position.x = targetX
+    this.#instance.position.z = targetZ
+    this.#instance.position.y = this.#initYTreasure
+
+    this.instance.lookAt(this.#controls.target.x, this.#controls.target.y, this.#controls.target.z)
+
+    const obj = { val: this.#distanceTreasure }
+    gsap.to(obj, {
+      val: 22,
+      duration: 6.5,
+      ease: 'power1.inOut',
+      onUpdate: () => {
+        const targetX = -obj.val * Math.cos(angleDir - this.#initAngleTreasure)
+        const targetZ = obj.val * Math.sin(angleDir - this.#initAngleTreasure)
+
+        this.#instance.position.x = targetX
+        this.#instance.position.z = targetZ
+        this.#instance.position.y = 5 + obj.val
+        this.instance.lookAt(this.#controls.target.x, this.#controls.target.y, this.#controls.target.z)
+      },
+    })
+  }
+
+  cinematicTreasureFoundReset = () => {
+    let settings = {}
+    settings = this.#settings.explore
+    if (Settings.touch) {
+      settings = this.#settings.exploreTouch
+    }
+
+    const targetX = -this.distFromCenter * Math.cos(this.lastAngleDir - this.#initAngleTreasure)
+    const targetZ = this.distFromCenter * Math.sin(this.lastAngleDir - this.#initAngleTreasure)
+
+    this.#instance.position.x = targetX
+    this.#instance.position.z = targetZ
+    this.#instance.position.y = settings.position.y
+
+    const startY = settings.position.y
+    const endY = this.#controls.target.y
+
+    this.instance.lookAt(this.#controls.target.x, startY, this.#controls.target.z)
+
+    const obj = { val: startY }
+    gsap.to(obj, {
+      val: endY,
+      duration: 3,
+      ease: 'power2.out',
+      onUpdate: () => {
+        this.instance.lookAt(this.#controls.target.x, obj.val, this.#controls.target.z)
+      },
+      onComplete: () => {
+        CinematicManager.end()
+        this.#controls.enabled = true
+      },
+    })
   }
 
   cameraFollow = (angleDir) => {

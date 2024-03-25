@@ -25,6 +25,8 @@ export const SOUNDS_CONST = {
   TURN_BOAT_1: 'TURN_BOAT_1',
   DROP_WATER: 'DROP_WATER',
   SEAGULL: 'SEAGULL',
+  TREASURE_LOOKING: 'TREASURE_LOOKING',
+  TREASURE_FOUND: 'TREASURE_FOUND',
 }
 
 const SOUNDS = [
@@ -134,6 +136,14 @@ const SOUNDS = [
   {
     name: SOUNDS_CONST.SEAGULL,
     src: './sounds/seagull.mp3',
+  },
+  {
+    name: SOUNDS_CONST.TREASURE_LOOKING,
+    src: './sounds/open_seabox.mp3',
+  },
+  {
+    name: SOUNDS_CONST.TREASURE_FOUND,
+    src: './sounds/open_seabox_end.mp3',
   },
 ]
 

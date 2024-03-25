@@ -61,6 +61,9 @@ export default class MainView {
     EnvManager.setToonMaterials()
     ModeManager.addCamera(this.#cameraManager)
 
+    // Init Boat treasures
+    this.#components.boat.initTreasures()
+
     // set up shadowmap on meshes
     this.#scene.traverse((object) => {
       if (object?.castCustomShadow === true) {

@@ -6,6 +6,7 @@ import { degToRad, randFloat } from 'three/src/math/MathUtils'
 import ControllerManager from '../../managers/ControllerManager'
 import { gsap } from 'gsap'
 import EnvManager from '../../managers/EnvManager'
+import { BOAT_MODE } from '.'
 
 const MAX_OPACITY = 0.8
 const NB_PARTICLES = 2300
@@ -25,6 +26,7 @@ export default class ParticlesFront {
 
   #debug
   #initZ = 6
+  maxSpeed = 1
   constructor(parent, debug, scene) {
     this.#debug = debug
     // Custom Material
@@ -131,7 +133,7 @@ export default class ParticlesFront {
       }
     }
 
-    const progress = velocity * (1 - this.jumpP)
+    const progress = velocity * (1 - this.jumpP) * this.maxSpeed
 
     this.#material.uniforms.uTime.value += (delta / 16) * this.#settings.uSpeed
     this.#material.uniforms.uActive.value = progress
@@ -172,5 +174,13 @@ export default class ParticlesFront {
     })
 
     return debug
+  }
+
+  transitioningSpeed(mode) {
+    if (mode === BOAT_MODE.HOOK) {
+      gsap.to(this, { maxSpeed: 0.2, duration: 1.5 })
+    } else {
+      gsap.to(this, { maxSpeed: 1, duration: 1.5 })
+    }
   }
 }

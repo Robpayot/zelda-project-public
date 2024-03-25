@@ -279,12 +279,16 @@ export default class WebGLApp {
       if (ModeManager.state === MODE.GAME || ModeManager.state === MODE.GAME_STARTED) {
         for (let i = 0; i < GameManager.objects.length; i++) {
           const mesh = GameManager.objects[i]
-          if (mesh.canVisible) mesh.visible = true
+          if (mesh.canVisible) {
+            mesh.visible = true
+          }
         }
 
         for (let i = 0; i < GameManager.wallObject.children.length; i++) {
           const mesh = GameManager.wallObject.children[i]
-          mesh.visible = true
+          if (mesh.canVisible) {
+            mesh.visible = true
+          }
         }
       }
     }

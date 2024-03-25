@@ -1,0 +1,103 @@
+.treasure {
+  position: absolute;
+  bottom: 20%;
+  left: 50%;
+  width: 70%;
+  overflow: auto;
+  padding: 2vw;
+  background-color: var(--color-overlay-alpha);
+  // #ffe4bdbd
+  transform: translateY(100vh) translate(-50%, -50%);
+  text-align: center;
+  border-radius: 1vw;
+  box-shadow: 3px 5px 12px 2px #0000004f;
+  opacity: 0;
+  visibility: hidden;
+
+  transition: transform 1s var(--ease-in-out-quart), opacity 0.5s ease, visibility 0.5s ease;
+
+  z-index: 10000;
+
+  max-width: 1344px;
+
+  @include respond-to(smartphone) {
+    width: 90%;
+    padding: 6vw 6vw;
+  }
+
+  @include respond-to(mobile-landscape) {
+    width: 70%;
+    padding: 4vw 4vw;
+  }
+
+  @include respond-to(above-desktop) {
+    padding-top: 58px;
+    padding-bottom: 58px;
+  }
+
+  &__text {
+    margin-bottom: 2vw;
+
+    @include respond-to(smartphone) {
+      margin-bottom: 10px;
+    }
+  }
+
+  &__title {
+    color: var(--color-black);
+  }
+
+  &.visible {
+    transform: translateY(0) translate(-50%, 0%);
+    transition: transform 1.1s var(--ease-out-bounce2), opacity 0.5s ease, visibility 0.5s ease;
+    pointer-events: auto;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .separator {
+    margin: 1vw auto;
+    width: 200px;
+  }
+
+  .sword,
+  .shield {
+    width: 5.5vw;
+    max-width: 67px;
+    margin: 0 0.6vw -0.5vw;
+
+    @include respond-to(above-smartphone) {
+      width: 2.5vw;
+    }
+  }
+
+  .icon-hook {
+    width: 2.3vw;
+    max-width: 40px;
+    margin: 0 0vw -0.3vw;
+
+    @include respond-to(smartphone) {
+      width: 25px;
+    }
+  }
+
+  .icon-shard {
+    width: 2.3vw;
+    max-width: 40px;
+    margin: 0 0vw -0.3vw;
+
+    @include respond-to(smartphone) {
+      width: 25px;
+    }
+  }
+
+  .icon-rupee {
+    width: 2.3vw;
+    max-width: 40px;
+    margin: 0 0vw -0.3vw;
+
+    @include respond-to(smartphone) {
+      width: 25px;
+    }
+  }
+}

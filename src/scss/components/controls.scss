@@ -1,0 +1,115 @@
+.controls {
+  position: absolute;
+  right: calc(13vw + 100px);
+  top: 50px;
+  pointer-events: auto;
+
+  @include respond-to(smartphone) {
+    right: 50%;
+    transform: translateX(50%);
+  }
+
+  &__button {
+    position: relative;
+    width: 75px;
+    color: var(--color-black);
+    cursor: pointer;
+
+    @include respond-to(smartphone) {
+      width: 50px;
+    }
+
+    & > * {
+      pointer-events: none;
+    }
+
+    &:nth-child(1) {
+      .controls__icon {
+        // top: 0%;
+        left: 1%;
+
+        @include respond-to(smartphone) {
+          left: 50%;
+        }
+        @include respond-to(mobile-landscape) {
+          left: 50%;
+        }
+      }
+    }
+
+    &:nth-child(2) {
+      position: absolute;
+      left: 90%;
+      top: 90%;
+
+      @include respond-to(smartphone) {
+        position: relative;
+        left: auto;
+        right: auto;
+      }
+      @include respond-to(mobile-landscape) {
+        position: relative;
+        left: auto;
+        right: auto;
+      }
+
+      .controls__icon {
+        left: 1%;
+
+        @include respond-to(smartphone) {
+          left: 50%;
+        }
+        @include respond-to(mobile-landscape) {
+          left: 50%;
+        }
+      }
+    }
+
+    &:hover {
+      .controls__icon {
+        transform: translate(-50%, -50%) scale(1.2);
+      }
+    }
+  }
+
+  &__icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 75%;
+    z-index: 10;
+    transition: transform var(--ease-out-bounce) 0.5s, opacity 0.15s ease;
+    opacity: 0;
+
+    @include respond-to(smartphone) {
+      width: 70%;
+    }
+    @include respond-to(mobile-landscape) {
+      width: 70%;
+    }
+
+    &.visible {
+      opacity: 1;
+    }
+  }
+
+  &__text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    @include respond-to(smartphone) {
+      display: none;
+    }
+    @include respond-to(mobile-landscape) {
+      display: none;
+    }
+  }
+
+  &__bkg {
+    height: 100%;
+    width: 100%;
+  }
+}

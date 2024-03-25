@@ -20,7 +20,10 @@ export default class Rupees {
   #baseY
   #scale
   constructor(scene, mode) {
-    if (mode === MODE.EXPLORE) {
+    if (mode === 'treasure') {
+      this.#baseY = 2
+      this.#scale = 0.014
+    } else if (mode === MODE.EXPLORE) {
       this.#baseY = 7
       this.#hitbox = 10
       this.#scale = 0.16
@@ -138,6 +141,7 @@ export default class Rupees {
     rupeeMesh.initPos = rupeeMesh.position.clone()
 
     rupeeMesh.visible = false
+    rupeeMesh.canVisible = false
 
     return rupeeMesh
   }

@@ -13,6 +13,9 @@ void main() {
   float aplha = 1.;
   #ifdef USE_ALPHAMAP
     aplha = texture.a;
+    if (aplha < 0.05) {
+      discard;
+    }
   #endif
 
   #ifdef USE_ALPHAMAP_CUTY

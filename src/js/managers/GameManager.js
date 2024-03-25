@@ -23,6 +23,7 @@ import html2canvas from 'html2canvas'
 import SoundManager, { SOUNDS_CONST } from './SoundManager'
 import Settings from '../utils/Settings'
 import { base64toBlob } from '../utils/base64ToBlobjs'
+import gsap from 'gsap'
 
 // Entities
 // 0: Rupees
@@ -155,6 +156,7 @@ class GameManager {
   }
 
   startGame = () => {
+    this.paused = false
     if (this.lastBlobUrl) {
       URL.revokeObjectURL(this.lastBlobUrl)
     }
@@ -167,6 +169,15 @@ class GameManager {
     this.timeoutStart = setTimeout(() => {
       ControllerManager.startGame()
       ModeManager.set(MODE.GAME_STARTED)
+
+      // prevent double event listened
+      if (this.subHit && typeof this.subHit.unsubscribe === 'function') {
+        this.subHit = null
+      }
+      if (this.subScore && typeof this.subScore.unsubscribe === 'function') {
+        this.subScore = null
+      }
+
       this.subHit = EventBusSingleton.subscribe(EVENT_HIT, this.eventHit)
       this.subScore = EventBusSingleton.subscribe(EVENT_SCORE, this.eventScore)
     }, time)
@@ -181,6 +192,8 @@ class GameManager {
       this.gameEl.classList.add('end')
       ModeManager.set(MODE.GAME)
     }
+
+    this.paused = false
 
     this.gameElEndScore.innerHTML = this.score
 
@@ -212,6 +225,7 @@ class GameManager {
     ControllerManager.reset()
 
     this.#objects.forEach((object) => {
+      object.canVisible = false
       object.visible = false
       object.collision = true
       switch (object.name) {
@@ -459,9 +473,24 @@ class GameManager {
     }
 
     if (mesh) {
-      mesh.canVisible = true
-      mesh.visible = true
       mesh.collision = false
+
+      const initScale = mesh.scale.x
+      const obj = { value: 0 }
+
+      const tl = gsap.timeline()
+      tl.add(() => {
+        mesh.canVisible = true
+        mesh.visible = true
+      }, 0.2)
+      tl.to(obj, {
+        value: initScale,
+        duration: 1,
+        onUpdate: () => {
+          const s = obj.value
+          mesh.scale.set(s, s, s)
+        },
+      })
       this.#objects.push(mesh)
     }
 
@@ -479,6 +508,7 @@ class GameManager {
 
     lastLineObjects.forEach((object) => {
       object.visible = false
+      object.canVisible = false
       object.collision = true
       switch (object.name) {
         case 'rupee':

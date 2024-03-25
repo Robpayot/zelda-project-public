@@ -66,6 +66,7 @@ export default class ShipGrey {
     shipGroup.material = material
 
     shipGroup.visible = false
+    shipGroup.canVisible = false
 
     return shipGroup
   }

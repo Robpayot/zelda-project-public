@@ -301,6 +301,8 @@ class EnvManager {
       current.ocean.alphaTex2 + this.progress * (next.ocean.alphaTex2 - current.ocean.alphaTex2)
     this.#settingsOcean.alphaWaves =
       current.ocean.alphaWaves + this.progress * (next.ocean.alphaWaves - current.ocean.alphaWaves)
+    this.#settingsOcean.alphaLightnings =
+      current.ocean.alphaLightnings + this.progress * (next.ocean.alphaLightnings - current.ocean.alphaLightnings)
     // console.log(this.progress, this.#settingsOcean.repeat)
     const currentColor = hexToRgb(current.ocean.color)
     const nextColor = hexToRgb(next.ocean.color)

@@ -5,6 +5,7 @@ import fragmentShader from '@glsl/splash/splash.frag'
 import { gsap } from 'gsap'
 import EnvManager from '../../managers/EnvManager'
 import Settings from '../../utils/Settings'
+import { BOAT_MODE } from '.'
 
 const SCALE_INCR = 0.1
 const SCALE_COEF = 1.4
@@ -17,6 +18,7 @@ export default class Splashes {
   #initY
   jumpP = 0
   offsetZ = 0
+  maxPSplash = 1
   constructor(parent) {
     // Custom Material Splash
     this.#mesh1 = parent.getObjectByName('splash-1')
@@ -135,7 +137,7 @@ export default class Splashes {
       }
     }
 
-    const progress = ControllerManager.boat.velocityP * (1 - this.jumpP)
+    const progress = ControllerManager.boat.velocityP * this.maxPSplash * (1 - this.jumpP)
 
     this.#mesh1.rotation.y += (delta / 16) * 0.04 * (progress + 0.5)
     this.#mesh1.scale.set(progress * SCALE_COEF + SCALE_INCR, 1, progress * SCALE_COEF + SCALE_INCR)
@@ -148,6 +150,14 @@ export default class Splashes {
       this.#mesh1.visible = this.#mesh2.visible = false
     } else {
       this.#mesh1.visible = this.#mesh2.visible = true
+    }
+  }
+
+  transitioningSpeed(mode) {
+    if (mode === BOAT_MODE.HOOK) {
+      gsap.to(this, { maxPSplash: 0.2, duration: 1.5 })
+    } else {
+      gsap.to(this, { maxPSplash: 1, duration: 1.5 })
     }
   }
 }

@@ -13,8 +13,20 @@ import fragmentReceiveShadowShader from '@glsl/shadows/receiveShadow.frag'
 
 import fragmentShaderPupil from '@glsl/link/pupil.frag'
 import fragmentShaderMouth from '@glsl/link/mouth.frag'
-import { CUSTOM_LINK, DARK_LINK, END_CAMERA_LINK, START_CAMERA_LINK } from '../../utils/constants'
+import {
+  CLOSE_TREASURE,
+  CUSTOM_LINK,
+  DARK_LINK,
+  END_CAMERA_LINK,
+  SHOW_TREASURE,
+  START_CAMERA_LINK,
+  START_CAMERA_TREASURE_FOUND,
+  TRIFORCE_FOUND,
+} from '../../utils/constants'
 import Settings from '../../utils/Settings'
+import { degToRad } from 'three/src/math/MathUtils'
+import SoundManager, { SOUNDS_CONST } from '../../managers/SoundManager'
+import { GLOBALS } from '../../utils/globals'
 
 const NB_MOUTH = 8
 const NB_EYES = 6
@@ -32,17 +44,16 @@ export default class Link {
     hatRY: 0,
     hatRZ: 0,
   }
-  mastPos = 0
   sailState = 0.01
   #scene
   #mesh
   #pupilLeft
   #pupilRight
   #mouth
-  #hat
   #mixer
   #mixerShield
-  #mixerHead
+  #masterAndShield
+  #mixerMaster
   #shield
   #mouthIndex = 0
   #mouthTextures = []
@@ -80,46 +91,117 @@ export default class Link {
     const animations = gltf.animations
 
     this.#mixer = new AnimationMixer(this.#mesh)
-    this.#mixerHead = new AnimationMixer(this.#mesh)
     this.#mixerShield = new AnimationMixer(this.#shield)
-
-    this.actions = []
+    this.#mixerMaster = new AnimationMixer(this.#masterAndShield)
 
     animations.forEach((animation) => {
       if (animation.name === 'stance') {
         const action = this.#mixer.clipAction(animation)
+        this.actionStance = action
         action.play()
-      } else if (animation.name === 'stanceCustom') {
+      } else if (animation.name === 'stanceCustomLink') {
         const action = this.#mixer.clipAction(animation)
         action.clampWhenFinished = true
         action.setLoop(LoopOnce)
         // action.play()
-        this.actionStanceCustom = action
+        this.actionCustomLink = action
       } else if (animation.name === 'shieldAction') {
         // Animation for shield
-        const action = this.#mixerShield.clipAction(animation)
-        action.play()
+        this.actionShield = this.#mixerShield.clipAction(animation)
+        this.actionShield.play()
+      } else if (animation.name === 'MasterAction') {
+        this.actionMaster = this.#mixerMaster.clipAction(animation)
+        this.actionMaster.play()
+      } else if (animation.name === 'MasterTreasure') {
+        const action = this.#mixerMaster.clipAction(animation)
+        action.clampWhenFinished = true
+        action.setLoop(LoopOnce)
+        this.actionMasterTreasure = action
+      } else if (animation.name === 'stanceTreasure') {
+        // Animation for treasure
+        const action = this.#mixer.clipAction(animation)
+        action.clampWhenFinished = true
+        action.setLoop(LoopOnce)
+        this.actionTreasure = action
       }
     })
 
     // Events
     EventBusSingleton.subscribe(START_CAMERA_LINK, this._playHeadAnimation)
+    EventBusSingleton.subscribe(START_CAMERA_TREASURE_FOUND, this._playTreasureAnimation)
+    EventBusSingleton.subscribe(CLOSE_TREASURE, this._resetTreasureAnimation)
     EventBusSingleton.subscribe(END_CAMERA_LINK, this._reverseHeadAnimation)
     EventBusSingleton.subscribe(CUSTOM_LINK, this._customFace)
     EventBusSingleton.subscribe(DARK_LINK, this._setDarkLink)
+    EventBusSingleton.subscribe(TRIFORCE_FOUND, this._setMaster)
+
+    this._setMaster() // set master if localstorage triforce true already
+
+    // on animation finish
+    this.#mixer.addEventListener('finished', (e) => {
+      if (e.action === this.actionTreasure) {
+        SoundManager.play(SOUNDS_CONST.TREASURE_FOUND)
+        EventBusSingleton.publish(SHOW_TREASURE)
+      }
+    })
   }
 
   _playHeadAnimation = () => {
-    this.actionStanceCustom.paused = false
-    this.actionStanceCustom.timeScale = 1
-    this.actionStanceCustom.play()
+    this.actionCustomLink.paused = false
+    this.actionCustomLink.timeScale = 1
+    this.actionCustomLink.play()
   }
 
   _reverseHeadAnimation = () => {
-    this.actionStanceCustom.paused = false
-    this.actionStanceCustom.timeScale = -1
-    this.actionStanceCustom.play()
+    this.actionCustomLink.paused = false
+    this.actionCustomLink.timeScale = -1
+    this.actionCustomLink.play()
     this.#mixer.update(5)
+  }
+
+  _playTreasureAnimation = () => {
+    this.actionStance.stop()
+    // get correct rotation:
+    this.#mesh.rotation.z = degToRad(2.4)
+    this.actionTreasure.paused = false
+    this.actionTreasure.time = 0
+    this.actionTreasure.timeScale = 1
+    this.actionTreasure.play()
+
+    // Master shield animation
+    this.actionShield.stop()
+    this.actionMaster.stop()
+    this.actionMasterTreasure.paused = false
+    this.actionMasterTreasure.time = 0
+    this.actionMasterTreasure.timeScale = 1
+    this.actionMasterTreasure.play()
+
+    let arrMouth = this.#mouthTextures
+    if (this.#isDark) {
+      arrMouth = this.#darkMouthTextures
+    }
+    this.#mouthIndex = 5
+    this.#mouth.material.uniforms.map.value = arrMouth[this.#mouthIndex]
+  }
+
+  _resetTreasureAnimation = () => {
+    this.actionTreasure.stop()
+    this.actionStance.play()
+    // get correct rotation:
+    this.#mesh.rotation.z = degToRad(87.6)
+
+    // Master shield animation
+    this.actionMasterTreasure.stop()
+    this.actionMaster.play()
+
+    this.actionShield.play()
+
+    let arrMouth = this.#mouthTextures
+    if (this.#isDark) {
+      arrMouth = this.#darkMouthTextures
+    }
+    this.#mouthIndex = 0
+    this.#mouth.material.uniforms.map.value = arrMouth[this.#mouthIndex]
   }
 
   _createMaterials() {
@@ -130,9 +212,9 @@ export default class Link {
     const pupilLeft = this.#mesh.getObjectByName('link-pupilLeft')
     const pupilRight = this.#mesh.getObjectByName('link-pupilRight')
     this.#mouth = this.#mesh.getObjectByName('link-mouth')
-    this.#hat = this.#mesh.getObjectByName('link-hat')
 
     this.#shield = this.#mesh.getObjectByName('link-shield')
+    this.#masterAndShield = this.#mesh.getObjectByName('link-master-sword-shield')
 
     // replace materials with custom Toon
     this.#mesh.children.forEach((child) => {
@@ -164,8 +246,7 @@ export default class Link {
           child.name === 'link-arms-bassin' ||
           child.name === 'link-hair' ||
           child.name === 'link-head' ||
-          child.name === 'link-hat' ||
-          child.name === 'link-shield'
+          child.name === 'link-hat'
         ) {
           child.castCustomShadow = true
           // add receive shadows
@@ -200,6 +281,83 @@ export default class Link {
         }
       }
     })
+
+    // replace materials with custom Toon
+    // SHield
+    const textureShield = this.#shield.material.map
+    this.#shield.castCustomShadow = true
+
+    // this.#shield.visible = false
+    // this.#shield.canVisible = false
+    // add receive shadows
+    this.#shield.material = new ShaderMaterial({
+      vertexShader: vertexReceiveShadowShader,
+      fragmentShader: fragmentReceiveShadowShader,
+      uniforms: {
+        map: { value: textureShield },
+        sunDir: { value: EnvManager.sunDir.position },
+        ambientColor: { value: EnvManager.ambientLight.color },
+        coefShadow: { value: EnvManager.settings.coefShadow },
+        // receive shadows
+        uDepthMap: {
+          value: null, // EnvManager.sunShadowMap.map.texture,
+        },
+        uShadowCameraP: {
+          value: EnvManager.sunShadowMap.camera.projectionMatrix,
+        },
+        uShadowCameraV: {
+          value: EnvManager.sunShadowMap.camera.matrixWorldInverse,
+        },
+        sRGBSpace: {
+          value: 0,
+        },
+      },
+      defines: {
+        USE_BONES: this.#shield.type === 'SkinnedMesh',
+        USE_SHADOWS: Settings.castShadows,
+      },
+      name: 'toon',
+    })
+
+    // Master SHield and sword
+    this.#masterAndShield.children.forEach((child) => {
+      if (child.type === 'SkinnedMesh' || child.type === 'Mesh') {
+        const textureOg = child.material.map
+        child.castCustomShadow = true
+        // add receive shadows
+        child.material = new ShaderMaterial({
+          vertexShader: vertexReceiveShadowShader,
+          fragmentShader: fragmentReceiveShadowShader,
+          uniforms: {
+            map: { value: textureOg },
+            sunDir: { value: EnvManager.sunDir.position },
+            ambientColor: { value: EnvManager.ambientLight.color },
+            coefShadow: { value: EnvManager.settings.coefShadow },
+            // receive shadows
+            uDepthMap: {
+              value: null, // EnvManager.sunShadowMap.map.texture,
+            },
+            uShadowCameraP: {
+              value: EnvManager.sunShadowMap.camera.projectionMatrix,
+            },
+            uShadowCameraV: {
+              value: EnvManager.sunShadowMap.camera.matrixWorldInverse,
+            },
+            sRGBSpace: {
+              value: 0,
+            },
+          },
+          defines: {
+            USE_BONES: child.type === 'SkinnedMesh',
+            USE_SHADOWS: Settings.castShadows,
+          },
+          name: 'toon',
+        })
+      }
+    })
+
+    this.#masterAndShield.visible = false
+    this.#masterAndShield.canVisible = false
 
     // eyebrow left
     const texEyebrowLeft = LoaderManager.get('eyebrow-1').texture
@@ -337,7 +495,12 @@ export default class Link {
   }
 
   _createMesh() {
-    return this.#scene.getObjectByName('link')
+    const mesh = this.#scene.getObjectByName('link')
+
+    // get correct rotation:
+    mesh.rotation.z = degToRad(87.6)
+
+    return mesh
   }
 
   _customFace = ({ type, incr, el }) => {
@@ -420,14 +583,25 @@ export default class Link {
     this.#pupilRight.material.uniforms.map.value = texPupil
   }
 
+  _setMaster = () => {
+    setTimeout(() => {
+      if (GLOBALS.triforce) {
+        this.#shield.visible = false
+        this.#shield.canVisible = false
+        this.#masterAndShield.visible = true
+        this.#masterAndShield.canVisible = true
+      }
+    }, 1000)
+  }
+
   /**
    * Update
    */
   update({ time, delta }) {
     // stance animation
     this.#mixer?.update(0.07)
-    this.#mixerShield?.update(0.05)
-    // this.#mixerHead?.update(0.8)
+    this.#mixerShield?.update(0.07)
+    this.#mixerMaster?.update(0.07)
     // this.hatBone.rotation.y = Math.sin(time * 0.8)
 
     this.hatBoneA.rotation.z = this.hatBoneARotZ + 0.88 * ControllerManager.boat.velocityP

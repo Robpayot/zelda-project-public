@@ -1,5 +1,20 @@
 .hud {
-  display: inline-block;
+  // display: inline-block;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+
+  @include respond-to(smartphone) {
+    align-items: flex-start;
+  }
+
+  @include respond-to(mobile-landscape) {
+    align-items: flex-start;
+  }
+
+  @include respond-to(tablet-portrait) {
+    align-items: flex-start;
+  }
 
   .separator {
     margin: 1vw 0;
@@ -18,6 +33,62 @@
 
       &.visible {
         opacity: 1;
+      }
+    }
+  }
+
+  &__triforce {
+    width: 9vw;
+    max-width: 190px;
+    position: relative;
+    display: flex;
+    // margin-right: 0.5vw;
+    // max-width: 58px;
+
+    @include respond-to(tablet-landscape) {
+      width: 12vw;
+    }
+
+    @include respond-to(tablet-portrait) {
+      width: 12vw;
+    }
+
+    @include respond-to(smartphone) {
+      width: 20vw;
+    }
+
+    @include respond-to(mobile-landscape) {
+      width: 8vw;
+    }
+
+    &__logo {
+      width: 100%;
+      opacity: 0.4;
+    }
+
+    &__icon {
+      width: 50%;
+      position: absolute;
+      opacity: 0;
+
+      &.visible {
+        opacity: 1;
+      }
+
+      &_1 {
+        top: 0;
+        left: 50%;
+        transform: translate(-50%);
+      }
+
+      &_2 {
+        left: 0;
+        bottom: -1px;
+      }
+
+      &_3 {
+        right: 0;
+        bottom: -1px;
       }
     }
   }
@@ -319,32 +390,32 @@
 
     @include respond-to(tablet-landscape) {
       bottom: auto;
-      left: 25px;
+      left: 40px;
       width: 12vw;
       height: 11.7vw;
-      top: 12vw;
+      top: 21vw;
     }
 
     @include respond-to(tablet-portrait) {
       bottom: auto;
-      left: 25px;
+      left: 40px;
       width: 12vw;
       height: 11.7vw;
-      top: 12vw;
+      top: 23vw;
     }
 
     @include respond-to(smartphone) {
       width: 20vw;
       height: 19.5vw;
       bottom: auto;
-      top: 26vw;
-      left: 25px;
+      top: 39vw;
+      left: 16px;
     }
 
     @include respond-to(mobile-landscape) {
       bottom: auto;
-      top: 11vw;
-      left: 25px;
+      top: 16vw;
+      left: 16px;
       width: 8vw;
       height: 7.8vw;
     }

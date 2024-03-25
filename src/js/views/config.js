@@ -12,7 +12,7 @@ export default {
     {
       name: 'boat',
       type: 'gltf',
-      path: './models/boat_link_stance_custom.glb',
+      path: './models/boat_link_crane_master_fake.glb',
     },
     // game objects
     {
@@ -55,6 +55,11 @@ export default {
       type: 'gltf',
       path: './models/mirador.glb',
     },
+    {
+      name: 'seabox',
+      type: 'gltf',
+      path: './models/seabox.glb',
+    },
     // islands
     {
       name: 'islands',
@@ -82,6 +87,7 @@ export default {
       type: 'texture',
       path: './img/Water/waves.png',
     },
+
     // clouds
     {
       name: 'long-cloud-1',
@@ -117,6 +123,11 @@ export default {
       name: 'small-cloud-3',
       type: 'texture',
       path: './img/Small_Clouds/small-3.png',
+    },
+    {
+      name: 'lightning',
+      type: 'texture',
+      path: './img/lightning.png',
     },
     // gltf textures
     {
@@ -276,32 +287,43 @@ export default {
     {
       name: 'island_0',
       type: 'gltf',
-      path: './models/island_0.glb',
+      path: './models/island_0_new.glb',
     },
     {
       name: 'island_1',
       type: 'gltf',
-      path: './models/island_1.glb',
+      path: './models/island_1_new.glb',
     },
     {
       name: 'island_2',
       type: 'gltf',
-      path: './models/island_2.glb',
+      path: './models/island_2_new.glb',
     },
     {
       name: 'island_3',
       type: 'gltf',
-      path: './models/island_3.glb',
+      path: './models/island_3_new.glb',
     },
     {
       name: 'island_4',
       type: 'gltf',
-      path: './models/island_4.glb',
+      path: './models/island_4_new.glb',
     },
     {
       name: 'island_5',
       type: 'gltf',
-      path: './models/island_5.glb',
+      path: './models/island_5_new.glb',
+    },
+    {
+      name: 'island_oasis',
+      type: 'gltf',
+      path: './models/island_oasis.glb',
+    },
+    // triforce shards
+    {
+      name: 'triforce_shards',
+      type: 'gltf',
+      path: './models/triforce_shards.glb',
     },
   ],
 }

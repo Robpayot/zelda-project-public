@@ -72,6 +72,7 @@ export default class Ship {
     mesh2.material = material2
 
     shipGroup.visible = false
+    shipGroup.canVisible = false
 
     return shipGroup
   }

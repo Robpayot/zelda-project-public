@@ -18,8 +18,6 @@ vec4 fromLinear(vec4 linearRGB)
 }
 
 void main() {
-  vec4 tex = texture2D(map, vUv);
-
   gl_FragColor = texture2D(map, vUv);
   float shadow = dot(vNormal, vSurfaceToLight);
   vec4 toonshading = vec4(1.) * smoothstep(0.0, 0.1, shadow) * 0.9 * coefShadow + ambientColor.r ;

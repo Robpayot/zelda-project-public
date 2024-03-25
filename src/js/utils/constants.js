@@ -12,6 +12,13 @@ export const DARK_LINK = 'DARK_LINK'
 export const CHOOSE_SETTINGS = 'CHOOSE_SETTINGS'
 export const CAMERA_FOLLOW = 'CAMERA_FOLLOW'
 export const START_TOUCH = 'START_TOUCH'
+export const HOOK_PUT_AWAY = 'HOOK_PUT_AWAY'
+export const START_CAMERA_TREASURE_FOUND = 'START_CAMERA_TREASURE_FOUND'
+export const SHOW_TREASURE = 'SHOW_TREASURE'
+export const CLOSE_TREASURE = 'CLOSE_TREASURE'
+export const TRIFORCE_FOUND = 'TRIFORCE_FOUND'
+export const EXPLORE_MESSAGE = 'EXPLORE_MESSAGE'
+export const TOOGLE_HOOK = 'TOOGLE_HOOK'
 
 // MODES
 export const MODE = {
@@ -21,5 +28,5 @@ export const MODE = {
   EXPLORE: 'explore',
 }
 
-export const DEBUG = import.meta.env.MODE === "development"
-// export const DEBUG = false
+// export const DEBUG = import.meta.env.MODE === "development"
+export const DEBUG = false

@@ -24,7 +24,21 @@
     opacity: 1;
     visibility: visible;
 
-    .explore__overlay {
+    .explore__overlay--tuto-1 {
+      transform: translateY(0) translate(-50%, -50%);
+      transition: transform 1.1s var(--ease-out-bounce2) 1s;
+      pointer-events: auto;
+    }
+  }
+
+  &.tuto2 {
+    .explore__overlay--tuto-1 {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-100vh) translate(-50%, -50%);
+      transition: transform 1s var(--ease-in-out-quart) 0s, opacity 2s ease, visibility 2s ease;
+    }
+    .explore__overlay--tuto-2 {
       transform: translateY(0) translate(-50%, -50%);
       transition: transform 1.1s var(--ease-out-bounce2) 1s;
       pointer-events: auto;
@@ -64,19 +78,70 @@
     }
 
     &__title {
-      margin-bottom: 4vw;
-    }
-
-    &__text {
-      margin: 0 auto 4vw;
-      max-width: 45vw;
+      margin-bottom: 40px;
 
       @include respond-to(smartphone) {
-        max-width: 100vw;
+        margin-bottom: 20px;
       }
 
       @include respond-to(mobile-landscape) {
-        margin: 12;
+        margin-bottom: 20px;
+      }
+    }
+
+    &__text {
+      margin: 0 auto 30px;
+      max-width: 40vw;
+
+      @include respond-to(smartphone) {
+        max-width: 100vw;
+        margin-bottom: 20px;
+      }
+
+      @include respond-to(mobile-landscape) {
+        margin-bottom: 20px;
+        max-width: 100vw;
+      }
+    }
+
+    &__image {
+      width: auto;
+      height: 15vw;
+      margin: 0 auto 30px;
+
+      @include respond-to(smartphone) {
+        height: auto;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto 10px;
+      }
+
+      @include respond-to(mobile-landscape) {
+        height: auto;
+        width: 100%;
+        max-width: 200px;
+        margin: 0 auto 10px;
+      }
+    }
+    &--tuto-2 {
+      .icon-hook {
+        width: 2.3vw;
+        max-width: 40px;
+        margin: 0 0vw -0.3vw;
+
+        @include respond-to(smartphone) {
+          width: 25px;
+        }
+      }
+
+      .icon-shard {
+        width: 2.3vw;
+        max-width: 40px;
+        margin: 0 0vw -0.3vw;
+
+        @include respond-to(smartphone) {
+          width: 25px;
+        }
       }
     }
   }
@@ -199,15 +264,20 @@
   &__too-close {
     position: absolute;
     width: 100%;
-    height: 100%;
+    height: auto;
     pointer-events: none;
-    top: 0;
+    top: 50%;
     opacity: 0;
-    left: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transform: translateY(20px);
+    left: 50%;
+    display: inline-block;
+    transform: translateX(-50%) translateY(20px);
+    text-align: center;
+
+    max-width: 350px;
+
+    @include respond-to(above-smartphone) {
+      max-width: 30vw;
+    }
 
     color: white;
     text-shadow: 0 0 5px rgb(0 0 0 / 0.7);
@@ -215,8 +285,21 @@
 
     &.active {
       opacity: 1;
-      transform: none;
+      transform: translateX(-50%);
       transition: transform 1.1s var(--ease-out-bounce2), opacity 0.5s ease;
+    }
+
+    .icon-hook {
+      width: 2.5vw;
+      // max-width: 40px;
+      min-width: 30px;
+      margin: 0 0vw -0.5vw;
+
+      @include respond-to(smartphone) {
+        width: 35px;
+        margin: 0 0vw -8px;
+
+      }
     }
   }
 }

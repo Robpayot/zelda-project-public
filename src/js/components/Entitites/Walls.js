@@ -7,6 +7,7 @@ import LoaderManager from '../../managers/LoaderManager'
 import vertexShader from '@glsl/game/wall.vert'
 import fragmentShader from '@glsl/game/barrel.frag'
 import { degToRad } from 'three/src/math/MathUtils'
+import gsap from 'gsap'
 
 const offsetZ = 258
 export default class Walls {
@@ -14,6 +15,7 @@ export default class Walls {
   #availLeft = []
   #availRight = []
   #mesh
+  #scale = 950
   resetZ = offsetZ
   constructor(scene, rangeX, side) {
     this.rangeX = rangeX
@@ -36,8 +38,7 @@ export default class Walls {
     const gltf = LoaderManager.get('wall').gltf
     const wallGroup = gltf.scene.getObjectByName('wall')
 
-    const s = 950
-    wallGroup.scale.set(s, s * 0.62, s)
+    wallGroup.scale.set(this.#scale, this.#scale * 0.62, this.#scale)
     wallGroup.position.y += 5
     wallGroup.rotation.y = degToRad(90)
     wallGroup.name = 'wall'
@@ -99,6 +100,7 @@ export default class Walls {
     mesh.initPos = mesh.position.clone()
 
     mesh.visible = true
+    mesh.canVisible = true
 
     if (side === 1) {
       this.#availRight.push(mesh)
@@ -114,6 +116,8 @@ export default class Walls {
     const mesh = avail[0]
 
     avail.shift()
+    mesh.canVisible = false
+    mesh.visible = false
     mesh.position.x = (side * this.rangeX * REPEAT_OCEAN) / 1.5
     mesh.position.z = z
     if (side === 1) {
@@ -122,5 +126,11 @@ export default class Walls {
     mesh.initPos = mesh.position.clone()
 
     avail.push(mesh)
+
+    const tl = gsap.timeline()
+    tl.add(() => {
+      mesh.canVisible = true
+      mesh.visible = true
+    }, 0.2)
   }
 }

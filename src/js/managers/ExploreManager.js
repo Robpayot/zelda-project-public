@@ -1,7 +1,7 @@
 import { Color, Object3D, Vector2 } from 'three'
 import Winds from '../components/Entitites/Winds'
 import { EventBusSingleton } from 'light-event-bus'
-import { EVENT_HIT, EVENT_SCORE, MODE, START_EXPLORE } from '../utils/constants'
+import { CLOSE_TREASURE, EVENT_HIT, EVENT_SCORE, EXPLORE_MESSAGE, MODE, START_EXPLORE } from '../utils/constants'
 import Waves from '../components/Entitites/Waves'
 import { sortPoints } from '../utils/three'
 import { REPEAT_OCEAN, SCALE_OCEAN } from '../components/Ocean'
@@ -21,6 +21,33 @@ import DATA from '../data/explore_levels.json'
 import Islands from '../components/Islands'
 import Settings from '../utils/Settings'
 import SoundManager, { SOUNDS_CONST } from './SoundManager'
+import LightRing, { LIGHT_RING_TYPE } from '../components/Entitites/LightRing'
+import Debugger from '@/js/managers/Debugger'
+import { BOAT_MODE } from '../components/Boat'
+import { GLOBALS } from '../utils/globals'
+import Lightnings from '../components/Entitites/Lightnings'
+import CinematicManager from './CinematicManager'
+
+const pointInPolygon = function (polygon, point) {
+  //A point is in a polygon if a line from the point to infinity crosses the polygon an odd number of times
+  let odd = false
+  //For each edge (In this case for each point of the polygon and the previous one)
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; i++) {
+    //If a line from the point into infinity crosses this edge
+    if (
+      polygon[i][1] > point[1] !== polygon[j][1] > point[1] && // One point needs to be above, one below our y coordinate
+      // ...and the edge doesn't cross our Y corrdinate before our x coordinate (but between our x coordinate and infinity)
+      point[0] <
+        ((polygon[j][0] - polygon[i][0]) * (point[1] - polygon[i][1])) / (polygon[j][1] - polygon[i][1]) + polygon[i][0]
+    ) {
+      // Invert odd
+      odd = !odd
+    }
+    j = i
+  }
+  //If the number of crossings was odd, the point is in the polygon
+  return odd
+}
 
 // Entities
 // 0: Rupees
@@ -31,10 +58,44 @@ import SoundManager, { SOUNDS_CONST } from './SoundManager'
 
 const NB_ENTITIES = 30
 const NB_WINDS = 3
+
+const LIGHT_RINGS_DATA = [
+  {
+    type: LIGHT_RING_TYPE.TRIFORCE,
+    triforceNb: 0,
+    gridPos: new Vector2(3675.18, 27.61),
+    // gridPos: new Vector2(0, 0),
+  },
+  {
+    type: LIGHT_RING_TYPE.TRIFORCE,
+    triforceNb: 1,
+    gridPos: new Vector2(-3552.5, -152.61),
+    // gridPos: new Vector2(100, 10),
+  },
+  {
+    type: LIGHT_RING_TYPE.TRIFORCE,
+    triforceNb: 2,
+    gridPos: new Vector2(-1901.49, -3265.68),
+    // gridPos: new Vector2(100, -100),
+  },
+  {
+    type: LIGHT_RING_TYPE.RUPEE_0,
+    gridPos: new Vector2(-1636.01, 3042.16),
+  },
+  {
+    type: LIGHT_RING_TYPE.RUPEE_0,
+    gridPos: new Vector2(2180.47, 2489.55),
+  },
+  {
+    type: LIGHT_RING_TYPE.RUPEE_0,
+    gridPos: new Vector2(1910.0, -3040.9),
+  },
+]
 class ExploreManager {
   #winds
   #parent
   #waves
+  #lightnings
   #coefOffset
   #stars
   // entities
@@ -50,11 +111,13 @@ class ExploreManager {
   #shipsGrey
   #level = 0
   #islands
+  #lightRings
+  #treasureZone = null
   constructor() {
     EventBusSingleton.subscribe(START_EXPLORE, this.start)
+    EventBusSingleton.subscribe(CLOSE_TREASURE, this.treasureFound)
 
     this.islandsEl = document.querySelector('[data-explore-islands]')
-    this.tooCloseEl = document.querySelector('[data-explore-to-close]')
   }
 
   get life() {
@@ -63,6 +126,10 @@ class ExploreManager {
 
   get score() {
     return this.#score
+  }
+
+  get treasureZone() {
+    return this.#treasureZone
   }
 
   init(scene, camera) {
@@ -82,6 +149,9 @@ class ExploreManager {
     this.#waves = new Waves()
     this.#parent.add(this.#waves.mesh)
 
+    this.#lightnings = new Lightnings()
+    this.#parent.add(this.#lightnings.mesh)
+
     this.#stars = new Stars()
     this.#parent.add(this.#stars.mesh)
 
@@ -93,8 +163,10 @@ class ExploreManager {
     this.#barrelRupees = this._createBarrelRupees()
     this.#miradors = this._createMirador()
     this.#shipsGrey = this._createShipsGrey()
-    // Rooms
+    // Islands
     this.#islands = this._createIslandsDetail()
+    // this
+    this.#lightRings = this._createLightRings()
 
     this.islandDist = 1470 * this.#islands.farRadius
     this.showDetailIsland = 0.4
@@ -102,6 +174,19 @@ class ExploreManager {
     this._initEntities()
 
     this.#parent.visible = false
+
+    this._createDebug()
+
+    setTimeout(() => {
+      if (GLOBALS.triforce) {
+        this.#lightRings.avail[0].visible = false
+        this.#lightRings.avail[0].found = true
+        this.#lightRings.avail[1].visible = false
+        this.#lightRings.avail[1].found = true
+        this.#lightRings.avail[2].visible = false
+        this.#lightRings.avail[2].found = true
+      }
+    }, 200)
   }
 
   start = () => {
@@ -113,6 +198,14 @@ class ExploreManager {
       }, 1000 * i)
     }
 
+    // prevent double event listened
+    if (this.subHit && typeof this.subHit.unsubscribe === 'function') {
+      this.subHit = null
+    }
+    if (this.subScore && typeof this.subScore.unsubscribe === 'function') {
+      this.subScore = null
+    }
+
     this.subHit = EventBusSingleton.subscribe(EVENT_HIT, this.eventHit)
     this.subScore = EventBusSingleton.subscribe(EVENT_SCORE, this.eventScore)
   }
@@ -121,6 +214,7 @@ class ExploreManager {
     this.subHit?.unsubscribe()
     this.subScore?.unsubscribe()
     this.#parent.visible = false
+    this.#lightnings.material.uniforms.globalOpacity.value = 0
     for (let i = 0; i < NB_WINDS; i++) {
       this.#winds[i].kill()
     }
@@ -222,6 +316,15 @@ class ExploreManager {
   _createIslandsDetail() {
     const islands = new Islands(this.#parent)
     return islands
+  }
+
+  _createLightRings() {
+    const lightRings = new LightRing()
+    LIGHT_RINGS_DATA.forEach((item) => {
+      const lightRing = lightRings.add(item.gridPos, item.type, item.triforceNb)
+      this.#parent.add(lightRing)
+    })
+    return lightRings
   }
 
   _initEntities() {
@@ -458,6 +561,15 @@ class ExploreManager {
       this.#waves.mesh.position.z = this.#waves.mesh.initPos.z + playerZ
     }
 
+    if (EnvManager.settingsOcean.alphaLightnings > 0) {
+      sortPoints(this.#lightnings.mesh, this.camera)
+      this.#lightnings.material.uniforms.uTime.value += (delta / 16) * 0.1
+      this.#lightnings.material.uniforms.globalOpacity.value = EnvManager.settingsOcean.alphaLightnings
+
+      this.#lightnings.mesh.position.x = this.#lightnings.mesh.initPos.x - playerX
+      this.#lightnings.mesh.position.z = this.#lightnings.mesh.initPos.z + playerZ
+    }
+
     // stars
     if (EnvManager.settings.alphaStars > 0) {
       this.#stars.material.uniforms.uTime.value += (delta / 16) * 0.1
@@ -477,8 +589,10 @@ class ExploreManager {
       } else if (object.name === 'barrelRupee') {
         object.children[0].rotation.y += (delta / 16) * 0.02
       } else if (object.name === 'ship_grey') {
-        if (dist < object.hitboxTarget) {
-          this.#shipsGrey.targetPlayer(object, playerX, playerZ)
+        if (!this.isCloseToIsland) {
+          if (dist < object.hitboxTarget) {
+            this.#shipsGrey.targetPlayer(object, playerX, playerZ)
+          }
         }
       }
 
@@ -492,41 +606,71 @@ class ExploreManager {
     let stopBoat = false
     let forceYStrength = -1
 
+    let closeToIsland = false
+
     for (let i = 0; i < this.#islands.islands.length; i++) {
       const { lod, island } = this.#islands.islands[i]
 
       if (island) {
+        if (i === 6) {
+          if (!GLOBALS.triforce) {
+            island.visible = false
+            break
+          } else {
+            island.visible = true
+          }
+        }
+
         const dist = getDistance(playerZ, -playerX, -island.initPos.z, -island.initPos.x)
 
-        let s = this.#islands.LODScale - (dist / this.islandDist - this.showDetailIsland) * this.#islands.LODScale
-        s = clamp(s, this.#islands.LODScale * this.showDetailIsland, this.#islands.LODScale)
-        lod.scale.set(s, s, s)
+        if (lod) {
+          let s = this.#islands.LODScale - (dist / this.islandDist - this.showDetailIsland) * this.#islands.LODScale
+          s = clamp(s, this.#islands.LODScale * this.showDetailIsland, this.#islands.LODScale)
+          lod.scale.set(s, s, s)
+        }
 
         if (dist / this.islandDist < this.showDetailIsland) {
-          island.visible = true
-          lod.visible = false
-          forceYStrength = i
+          if (lod) {
+            island.visible = true
+            lod.visible = false
+            forceYStrength = i
+          }
+          closeToIsland = true
 
           for (let y = 0; y < island.collisions.length; y++) {
-            const collision = island.collisions[y]
-            const collDist = getDistance(playerZ, -playerX, -collision.worldPos.z, -collision.worldPos.x)
+            const { shape, worldPos, radius, polyShape } = island.collisions[y]
 
-            if (collDist < collision.radius) {
-              stopBoat = true
+            if (shape === 'plane') {
+              const point = [worldPos.x - playerX, worldPos.z + playerZ]
+
+              const isPointInsidePolygon = pointInPolygon(polyShape, point)
+              if (isPointInsidePolygon) {
+                stopBoat = true
+              }
+            } else if (shape === 'circle') {
+              const collDist = getDistance(playerZ, -playerX, -worldPos.z, -worldPos.x)
+              if (collDist < radius) {
+                stopBoat = true
+              }
             }
           }
         } else {
-          island.visible = false
-          lod.visible = true
+          if (lod) {
+            island.visible = false
+            lod.visible = true
+          }
         }
 
         island.position.x = island.initPos.x - playerX
         island.position.z = island.initPos.z + playerZ
       }
-
-      lod.position.x = lod.initPos.x - playerX / this.#islands.LODRatio
-      lod.position.z = lod.initPos.z + playerZ / this.#islands.LODRatio
+      if (lod) {
+        lod.position.x = lod.initPos.x - playerX / this.#islands.LODRatio
+        lod.position.z = lod.initPos.z + playerZ / this.#islands.LODRatio
+      }
     }
+
+    this.isCloseToIsland = closeToIsland
 
     if (stopBoat) {
       ControllerManager.stop()
@@ -542,6 +686,46 @@ class ExploreManager {
       const mat = this.#rupees.materials[i]
       mat.uniforms.ambientColor.value = new Color(EnvManager.settings.ambientLight)
     }
+
+    // update light ring pos
+    let treasureReached = false
+    let closeToTreasure = false
+    for (let i = 0; i < this.#lightRings.avail.length; i++) {
+      const mesh = this.#lightRings.avail[i]
+      mesh.position.x = mesh.initPos.x - playerX
+      mesh.position.z = mesh.initPos.z + playerZ
+      const dist = getDistance(0, 0, mesh.position.z, mesh.position.x)
+
+      if (ControllerManager.boatMode === BOAT_MODE.HOOK && !mesh.found) {
+        if (dist < mesh.hitbox) {
+          treasureReached = mesh
+        }
+      }
+      if (dist < mesh.hitbox && !mesh.found) {
+        closeToTreasure = true
+      }
+    }
+
+    if (closeToTreasure && !this.msgSent && !CinematicManager.isPlaying) {
+      this.msgSent = true
+      let message = Settings.touch
+        ? 'A treasure! Use the Hook <img class="icon-hook" src="/icons/hook.png" alt="" /> and press "Put away"!'
+        : 'A treasure! Use the Hook <img class="icon-hook" src="/icons/hook.png" alt="" /> and press the spacebar!'
+      EventBusSingleton.publish(EXPLORE_MESSAGE, {
+        message,
+        time: 1000,
+      })
+      setTimeout(() => {
+        this.msgSent = false
+      }, 1000)
+    }
+
+    this.#treasureZone = treasureReached
+
+    this.#lightRings.materialRing.uniforms.uTime.value += (delta / 16) * 0.1
+    this.#lightRings.materialColumn.uniforms.uTime.value += (delta / 16) * 0.1
+
+    // check if close to treasure zone
   }
 
   _getCloseIsland(index) {
@@ -572,6 +756,35 @@ class ExploreManager {
       const el = this.islandsEl.children[i]
       el.classList.remove('active')
     }
+  }
+
+  hideTreasure() {
+    if (this.#treasureZone) this.#treasureZone.visible = false
+  }
+
+  treasureFound = () => {
+    if (this.#treasureZone) this.#treasureZone.found = true
+  }
+
+  /**
+   * Debug
+   */
+  _createDebug() {
+    if (!Debugger) return
+    const obj = {
+      color: '#bfecf0',
+    }
+    const debug = Debugger.addFolder({ title: 'Explore', index: 1 })
+    debug.addInput(obj, 'color', { label: 'Color' }).on('change', () => {
+      this.#lightRings.materialColumn.uniforms.color.value = new Color(obj.color)
+    })
+    debug.addInput(this.#lightRings.avail[1], 'position', { label: 'Position' })
+
+    return debug
+  }
+
+  _removeDebug() {
+    if (this._debug) this._debug.dispose()
   }
 }
 

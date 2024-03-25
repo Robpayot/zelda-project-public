@@ -10,6 +10,26 @@
   opacity: 0;
   visibility: hidden;
 
+  .hud {
+    align-items: flex-start;
+
+    @include respond-to(smartphone) {
+      align-items: flex-start;
+    }
+
+    @include respond-to(mobile-landscape) {
+      align-items: flex-start;
+    }
+
+    @include respond-to(tablet-portrait) {
+      align-items: flex-start;
+    }
+
+    .separator {
+      width: 100%;
+    }
+  }
+
   @include respond-to(smartphone) {
     padding-left: 15px;
     padding-top: 15px;

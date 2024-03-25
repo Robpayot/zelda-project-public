@@ -1,6 +1,7 @@
 import { Object3D, ShaderMaterial } from 'three'
-import { degToRad, lerp } from 'three/src/math/MathUtils'
+import { clamp, degToRad, lerp } from 'three/src/math/MathUtils'
 import ControllerManager from '../../managers/ControllerManager'
+import UIManager from '../../managers/UIManager'
 import { gsap } from 'gsap'
 
 import Splashes from './Splashes'
@@ -16,9 +17,28 @@ import fragmentToonShader from '@glsl/partials/toon.frag'
 import vertexReceiveShadowShader from '@glsl/shadows/receiveShadow.vert'
 import fragmentReceiveShadowShader from '@glsl/shadows/receiveShadow.frag'
 import EnvManager from '../../managers/EnvManager'
-import { EVENT_HIT } from '../../utils/constants'
+import {
+  CLOSE_TREASURE,
+  EVENT_HIT,
+  EVENT_SCORE,
+  HOOK_PUT_AWAY,
+  SHOW_TREASURE,
+  START_CAMERA_TREASURE_FOUND,
+  TOOGLE_HOOK,
+  TRIFORCE_FOUND,
+} from '../../utils/constants'
 import { EventBusSingleton } from 'light-event-bus'
 import Settings from '../../utils/Settings'
+import Crane from './Crane'
+import ExploreManager from '../../managers/ExploreManager'
+import Rupees from '../Entitites/Rupees'
+import { LIGHT_RING_TYPE } from '../Entitites/LightRing'
+import TriforceShards from '../Entitites/TriforceShards'
+
+export const BOAT_MODE = {
+  SAIL: 'sail',
+  HOOK: 'hook',
+}
 
 export default class Boat {
   #debug
@@ -34,18 +54,24 @@ export default class Boat {
   #mesh
   #splashMeshes
   #mastBone
+  #mastBaseBone
   #sailMesh
-  mastPos = 0
+  mastDir = 0
   sailState = 0.25
   #particleSideMesh
   #particlesFrontMesh
   #particlesJumpMesh
+  #craneMesh
+  #boatBodyMesh
   #absTurnForce = 0
   #absTurnForceTarget = 0
   #scene
   #gltf
   rotaZ = 1
   #object
+  #mode = BOAT_MODE.SAIL
+  #rupees = []
+  #triforceShards
   constructor({ debug, scene, gltf }) {
     this.#debug = debug
     this.#scene = scene
@@ -70,6 +96,10 @@ export default class Boat {
     return this.#sailMesh
   }
 
+  get mode() {
+    return this.#mode
+  }
+
   initSubObjects() {
     // fix issue objects no appearing
     this.#sailMesh = this._createSailMesh()
@@ -77,14 +107,85 @@ export default class Boat {
     this.#particleSideMesh = this._createParticlesSideMesh()
     this.#particlesFrontMesh = this._createParticlesFrontMesh()
     this.#particlesJumpMesh = this._createParticlesJumpMesh()
+    this.#craneMesh = this._createCraneMesh()
 
-    this._createDebugFolder()
+    this.#mastBaseBone = this.#mesh.getObjectByName('j_fn_mast')
 
     // events
     EventBusSingleton.subscribe(EVENT_HIT, this._eventHit)
+    EventBusSingleton.subscribe(TOOGLE_HOOK, this._toogleHook)
+    EventBusSingleton.subscribe(HOOK_PUT_AWAY, this._toogleHookPutAway)
+    EventBusSingleton.subscribe(START_CAMERA_TREASURE_FOUND, this._playTreasureAnimation)
+    EventBusSingleton.subscribe(SHOW_TREASURE, this._showTreasure)
+    EventBusSingleton.subscribe(CLOSE_TREASURE, this._resetTreasureAnimation)
 
     const s = 0.25
     this.sailMesh.mesh.scale.set(s, this.sailMesh.mesh.scale.y, this.sailMesh.mesh.scale.z)
+
+    this.initSailZ = this.#sailMesh.mesh.position.z
+
+    // this._toogleHook() // debug
+  }
+
+  initTreasures() {
+    this.#rupees = this._createRupees()
+    this.#triforceShards = this._createTriforceShards()
+
+    this._createDebugFolder()
+  }
+
+  _toogleHook = () => {
+    if (this.boatModeTransitioning) return
+    if (this.#mode === BOAT_MODE.SAIL) {
+      this.boatModeTransitioning = true
+      this.tlHook = new gsap.timeline({
+        onComplete: () => {
+          this.#mode = BOAT_MODE.HOOK
+          this.boatModeTransitioning = false
+          this.#splashMeshes.transitioningSpeed(this.#mode)
+          this.#particlesFrontMesh.transitioningSpeed(this.#mode)
+        },
+      })
+      this.tlHook.to(this.#mastBaseBone.scale, { x: 0, y: 0, z: 0, duration: 0.75, ease: 'power4.out' }, 0)
+      this.tlHook.to(this.#sailMesh.mesh.scale, { x: 0, y: 0, z: 0, duration: 0.75, ease: 'power4.out' }, 0)
+      this.tlHook.to(this.#sailMesh.mesh.position, { z: -60, duration: 0.75, ease: 'power4.out' }, 0)
+
+      this.tlHook.add(() => {
+        this.#craneMesh.open()
+      }, 0.3)
+
+      UIManager.updateBoatMode(BOAT_MODE.HOOK)
+      ControllerManager.updateBoatMode(BOAT_MODE.HOOK)
+    } else {
+      const delay = 0.8
+      this.boatModeTransitioning = true
+      this.tlHook = new gsap.timeline()
+      this.tlHook.add(() => {
+        this.#craneMesh.close()
+      }, 0)
+      this.tlHook.to(this.#mastBaseBone.scale, { x: 1, y: 1, z: 1, duration: 1, ease: 'bounce.out' }, delay)
+      const scaleX = -this.mastDir * 1.1
+      this.tlHook.to(this.#sailMesh.mesh.scale, { x: scaleX, y: 1, z: 1, duration: 1, ease: 'bounce.out' }, delay)
+      this.tlHook.to(this.#sailMesh.mesh.position, { z: this.initSailZ, duration: 1, ease: 'bounce.out' }, delay)
+      this.tlHook.add(() => {
+        this.#mode = BOAT_MODE.SAIL
+        this.boatModeTransitioning = false
+        this.#splashMeshes.transitioningSpeed(this.#mode)
+        this.#particlesFrontMesh.transitioningSpeed(this.#mode)
+      })
+      UIManager.updateBoatMode(BOAT_MODE.SAIL)
+      this.tlHook.add(() => {
+        ControllerManager.updateBoatMode(BOAT_MODE.SAIL)
+      }, 1)
+    }
+  }
+
+  _toogleHookPutAway = (value) => {
+    if (value) {
+      this.#craneMesh.putAway()
+    } else {
+      this.#craneMesh.reset(ExploreManager.treasureZone)
+    }
   }
 
   _createMesh() {
@@ -111,6 +212,7 @@ export default class Boat {
         const textureOg = child.material.map
 
         if (child.name === 'boat-body') {
+          this.#boatBodyMesh = child
           // add receive shadows
           child.material = new ShaderMaterial({
             vertexShader: vertexReceiveShadowShader,
@@ -137,6 +239,7 @@ export default class Boat {
             defines: {
               USE_BONES: child.type === 'SkinnedMesh',
               USE_SHADOWS: Settings.castShadows,
+              // USE_MORPHTARGETS: true,
             },
             name: 'toon',
           })
@@ -167,6 +270,10 @@ export default class Boat {
     return new Sail(this.#mesh)
   }
 
+  _createCraneMesh() {
+    return new Crane(this.#gltf, this.#mesh, this.#debug)
+  }
+
   _createSplashMeshes() {
     return new Splashes(this.#object)
   }
@@ -184,6 +291,77 @@ export default class Boat {
     return new ParticlesJump(this.#object, this.#debug)
   }
 
+  _createRupees() {
+    const rupees = new Rupees(this.#mesh, 'treasure')
+
+    // rupee silver
+    const mesh = rupees.add(0, 0)
+    mesh.position.z = -0.1
+    mesh.rotation.x = 0.35
+    mesh.visible = false
+
+    mesh.material = rupees.materials[6]
+    this.#mesh.add(mesh)
+
+    // rupee
+    const mesh2 = rupees.add(0, 0)
+    mesh2.position.z = -0.1
+    mesh2.rotation.x = 0.35
+    mesh2.visible = false
+
+    mesh2.material = rupees.materials[5]
+    this.#mesh.add(mesh2)
+
+    const arr = [mesh, mesh2]
+
+    return arr
+  }
+
+  _createTriforceShards() {
+    const { shards } = new TriforceShards(this.#mesh)
+
+    for (let i = 0; i < shards.length; i++) {
+      const mesh = shards[i]
+      mesh.position.z = -0.1
+      mesh.rotation.x = 2
+      mesh.visible = false
+    }
+
+    return shards
+  }
+
+  _playTreasureAnimation = () => {
+    this.#boatBodyMesh.morphTargetInfluences[0] = 1
+  }
+
+  _resetTreasureAnimation = () => {
+    // if rupee
+    if (ExploreManager.treasureZone.type === LIGHT_RING_TYPE.RUPEE_0) {
+      this.#rupees[0].visible = false
+    } else if (ExploreManager.treasureZone.type === LIGHT_RING_TYPE.RUPEE_1) {
+      this.#rupees[1].visible = false
+    } else if (ExploreManager.treasureZone.type === LIGHT_RING_TYPE.TRIFORCE) {
+      this.#triforceShards[ExploreManager.treasureZone.triforceNb].visible = false
+    }
+    this.#mode = BOAT_MODE.HOOK
+    this._toogleHook()
+    this.#craneMesh.resetSeabox()
+  }
+
+  _showTreasure = () => {
+    // if rupee
+    if (ExploreManager.treasureZone.type === LIGHT_RING_TYPE.RUPEE_0) {
+      this.#rupees[0].visible = true
+      EventBusSingleton.publish(EVENT_SCORE, 200)
+    } else if (ExploreManager.treasureZone.type === LIGHT_RING_TYPE.RUPEE_1) {
+      this.#rupees[1].visible = true
+      EventBusSingleton.publish(EVENT_SCORE, 100)
+    } else if (ExploreManager.treasureZone.type === LIGHT_RING_TYPE.TRIFORCE) {
+      this.#triforceShards[ExploreManager.treasureZone.triforceNb].visible = true
+      EventBusSingleton.publish(TRIFORCE_FOUND, ExploreManager.treasureZone.triforceNb)
+    }
+  }
+
   _eventHit = () => {
     this.tlHit?.kill()
     this.tlHit = new gsap.timeline()
@@ -198,10 +376,11 @@ export default class Boat {
 
     this.#mesh.rotation.z =
       this.#initRotaZ + Math.sin(time + this.rotaZ) * (0.1 + ControllerManager.boat.turnForce * 0.5)
-    this.#mesh.rotation.x = this.#initRotaX + Math.sin(time) * (ControllerManager.boat.velocity * 6)
+    this.#mesh.rotation.x = this.#initRotaX + Math.sin(time) * Math.min(ControllerManager.boat.velocity * 6, 0.2)
 
     this.#sailMesh?.update({ time, delta })
     this.#splashMeshes?.update({ time, delta })
+    this.#craneMesh?.update({ time, delta })
 
     this.#absTurnForceTarget = Math.abs(ControllerManager.boat.turnForce)
 
@@ -217,6 +396,7 @@ export default class Boat {
       this.#particlesJumpMesh.mesh.visible = false
       this.canShowP = false
     } else {
+      let progessP = ControllerManager.boat.velocityP
       this.#particleSideMesh?.update({
         time,
         delta,
@@ -227,13 +407,13 @@ export default class Boat {
       this.#particlesFrontMesh?.update({
         time,
         delta,
-        velocity: ControllerManager.boat.velocityP,
+        velocity: progessP,
       })
 
       this.#particlesJumpMesh?.update({
         time,
         delta,
-        velocity: ControllerManager.boat.velocityP,
+        velocity: progessP,
       })
 
       if (!this.canShowP) {
@@ -257,9 +437,9 @@ export default class Boat {
       if (boatAngle < 0) {
         boatAngle = Math.PI * 2 + boatAngle
       }
-      if (this.mastPos >= 0 && boatAngle < Math.PI) {
+      if (this.mastDir >= 0 && boatAngle < Math.PI) {
         this.turnMast(-1)
-      } else if (this.mastPos <= 0 && boatAngle > Math.PI) {
+      } else if (this.mastDir <= 0 && boatAngle > Math.PI) {
         this.turnMast(1)
       }
     }
@@ -271,7 +451,18 @@ export default class Boat {
     } else {
       this.animSail(0.25)
     }
-    // this.sailMesh.scale.x = ControllerManager.boat.velocityP * -this.mastPos
+    // this.sailMesh.scale.x = ControllerManager.boat.velocityP * -this.mastDir
+
+    // Treasures
+    for (let i = 0; i < this.#rupees.length; i++) {
+      const rupee = this.#rupees[i]
+      rupee.rotation.y += (delta / 16) * 0.02
+    }
+
+    for (let i = 0; i < this.#triforceShards.length; i++) {
+      const shard = this.#triforceShards[i]
+      shard.rotation.z += (delta / 16) * 0.02
+    }
   }
 
   resize({ width, height }) {}
@@ -279,7 +470,7 @@ export default class Boat {
   turnMast(dir = 1) {
     const maxDeg = 36
     const tl = new gsap.timeline()
-    this.mastPos = dir
+    this.mastDir = dir
 
     tl.to(this.sailMesh.mastBone.rotation, { y: degToRad(-90 + maxDeg * dir), duration: 2.1 }, 0)
     tl.to(this.sailMesh.mesh.rotation, { z: degToRad(-maxDeg * dir), duration: 2.1 }, 0)
@@ -290,12 +481,16 @@ export default class Boat {
         this.animSail(0.6, true)
       }
     }, 1)
+
+    if (this.#mode === BOAT_MODE.HOOK) {
+      this.#craneMesh.turn(dir)
+    }
   }
 
   animSail(force, turn) {
     if (force === this.sailState && !turn) return
     this.sailState = force
-    const s = -this.mastPos * force
+    const s = -this.mastDir * force
 
     if (s > 0 || s < 0) {
       const tl = new gsap.timeline()
@@ -317,6 +512,7 @@ export default class Boat {
     const debug = this.#debug.addFolder({ title: 'Boat', expanded: false })
 
     debug.addInput(this.#settings, 'power', { step: 0.01 }).on('change', settingsChangedHandler)
+    debug.addInput(this.#triforceShards[0], 'rotation')
 
     const btn = debug.addButton({
       title: 'Copy settings',

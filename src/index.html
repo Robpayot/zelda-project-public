@@ -60,7 +60,9 @@
             </div>
             <div class="settings__buttons">
               <button aria-label="High" data-settings-btn="high" class="settings__button h3-reggae button">High</button>
-              <button aria-label="Medium" data-settings-btn="medium" class="settings__button h3-reggae button">Medium</button>
+              <button aria-label="Medium" data-settings-btn="medium" class="settings__button h3-reggae button">
+                Medium
+              </button>
               <button aria-label="Low" data-settings-btn="low" class="settings__button h3-reggae button">Low</button>
             </div>
           </div>
@@ -90,9 +92,7 @@
           <button aria-label="Mode" data-menu-btn="mode" class="menu__button h3-reggae">Mode</button>
           <button aria-label="Link" data-menu-btn="link" class="menu__button h3-reggae">Link</button>
           <button aria-label="About" data-menu-btn="about" class="menu__button h3-reggae">About</button>
-          <button aria-label="Take screenshot" data-menu-btn="camera" class="menu__button h3-reggae">
-            <img class="menu__icon" src="/icons/camera.png" />
-          </button>
+
           <div class="footer touch-only">
             <div class="separator touch-only">
               <span class="separator__line"></span>
@@ -180,6 +180,21 @@
             </div>
           </div>
         </div>
+        <!-- CONTROLS HUD -->
+        <div data-controls class="controls">
+          <button class="controls__button" aria-label="Take screenshot" data-controls-btn="camera">
+            <img class="controls__icon visible" src="/icons/camera.png" />
+            <img class="controls__bkg" src="/img/button.png" />
+            <p class="controls__text t-button-controls">E</p>
+          </button>
+
+          <button class="controls__button" aria-label="Switch sail mode" data-controls-btn="toggleHook">
+            <img data-controls-img="hook" class="controls__icon visible" src="/icons/hook.png" />
+            <img data-controls-img="sail" class="controls__icon" src="/icons/sail.png" />
+            <img class="controls__bkg" src="/img/button.png" />
+            <p class="controls__text t-button-controls">F</p>
+          </button>
+        </div>
 
         <div data-about class="about">
           <p class="about__text text-2">
@@ -235,6 +250,22 @@
             <img src="/icons/selector2-alpha.png" alt="" />
           </div>
           <button aria-label="Close" data-about-btn="about" class="about__button h3-reggae button">Close</button>
+        </div>
+        <div data-treasure class="treasure">
+          <p class="treasure__text text-2">
+            Congratulations! You've found the last Triforce Shards! You've won the Master sword
+            <img class="shield" src="/icons/master_sword.png" alt="" /> and Mirror Shield
+            <img class="shield" src="/icons/mirror_shield.png" alt="" />. You're boat now go 2x faster! Continue to
+            explore or try the Ruppee's game mode!
+          </p>
+          <div class="separator">
+            <img src="/icons/selector2-alpha.png" alt="" />
+            <span class="separator__line"></span>
+            <img src="/icons/selector2-alpha.png" alt="" />
+          </div>
+          <button aria-label="Close" data-treasure-btn="treasure" class="treasure__button h3-reggae button">
+            Close
+          </button>
         </div>
         <!-- Game -->
         <div data-game class="game">
@@ -402,7 +433,7 @@
         </div>
         <!-- Explore -->
         <div data-explore class="explore">
-          <div class="explore__overlay">
+          <div class="explore__overlay explore__overlay--tuto-1">
             <h2 class="explore__overlay__title h2-reggae">Explore the ocean</h2>
             <p class="explore__overlay__text text-1 touch-hidden">
               Use the arrow keys to navigate
@@ -463,7 +494,35 @@
             <p class="game__overlay__text text-1 touch-only">
               Touch and move anywhere else to rotate the camera and pinch to zoom
             </p>
-            <button aria-label="OK" data-explore-start class="h3-reggae button">Ok</button>
+            <button aria-label="OK" data-explore-start="first" class="h3-reggae button">Ok</button>
+          </div>
+          <div class="explore__overlay explore__overlay--tuto-2">
+            <h2 class="explore__overlay__title h2-reggae">Find the Triforce</h2>
+            <img src="/img/light-ring.jpg" class="explore__overlay__image" />
+            <p class="explore__overlay__text text-1 touch-hidden">
+              If you see a glowing light like this, use the Hook <img class="icon-hook" src="/icons/hook.png" /> and
+              press the spacebar
+              <svg
+                class="keyboard-space"
+                id="Layer_1"
+                data-name="Layer 1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 52.2 17.52"
+              >
+                <path
+                  d="m2.94,0l-.04,11.82s.13,2.9,2.9,2.9h27.6l13.6-.05s2.4-.09,2.4-3.25V0h2.8v11.72s.22,5.07-5.13,5.76l-41.27.04s-5.8-.17-5.8-5.8S.1,0,.1,0h2.84Z"
+                />
+              </svg>
+              to find a treasure.
+            </p>
+            <p class="explore__overlay__text text-1 touch-only">
+              If you see a glowing light like this, use the Hook <img class="icon-hook" src="/icons/hook.png" /> and
+              press "Put Away" to find a treasure.
+            </p>
+            <p class="explore__overlay__text text-1">
+              Maybe you'll find a Triforce shard! <img class="icon-shard" src="/icons/shard.png" />
+            </p>
+            <button aria-label="OK" data-explore-start="final" class="h3-reggae button">Ok</button>
           </div>
           <!-- island titles -->
           <div data-explore-islands class="explore__islands">
@@ -474,12 +533,33 @@
             <img src="/img/islands/island_4.png" class="explore__islands__item" alt="Forest Haven" />
             <img src="/img/islands/island_5.png" class="explore__islands__item" alt="Outset Island" />
           </div>
-          <div data-explore-to-close class="explore__too-close h3-reggae">Too close!</div>
+          <div data-explore-message class="explore__too-close h3-reggae">Too close!</div>
           <div class="hud">
             <div data-explore-hearts class="hud__hearts"></div>
             <div class="hud__rupees">
               <img class="hud__rupees__logo" src="/icons/rupee_counterG2.png" alt="" />
               <div data-explore-rupees-numbers class="hud__rupees__numbers"></div>
+            </div>
+            <div class="hud__triforce">
+              <img class="hud__triforce__logo" src="/img/triforce/full-grey.png" alt="" />
+              <img
+                data-triforce="1"
+                class="hud__triforce__icon hud__triforce__icon_1"
+                src="/img/triforce/full.png"
+                alt=""
+              />
+              <img
+                data-triforce="2"
+                class="hud__triforce__icon hud__triforce__icon_2"
+                src="/img/triforce/full.png"
+                alt=""
+              />
+              <img
+                data-triforce="3"
+                class="hud__triforce__icon hud__triforce__icon_3"
+                src="/img/triforce/full.png"
+                alt=""
+              />
             </div>
             <div class="hud__compass">
               <img data-compass-bkg src="/icons/compass-bkg.png" alt="" class="hud__compass-bkg" />
@@ -523,7 +603,9 @@
                 <span class="separator__line"></span>
                 <img src="/icons/selector2-alpha.png" alt="" />
               </div>
-              <button aria-label="Close" data-link-btn class="explore__link__close h4-reggae button-small">Close</button>
+              <button aria-label="Close" data-link-btn class="explore__link__close h4-reggae button-small">
+                Close
+              </button>
             </div>
           </div>
         </div>
@@ -537,6 +619,11 @@
           </button>
           <button aria-label="go right" data-joystick-right class="joystick__right">
             <img data-joystick-stick src="/icons/arrow2.png" alt="" />
+          </button>
+        </div>
+        <div class="put-away-button">
+          <button aria-label="put-away-button" data-put-away-button class="put-away-button__content">
+            <span class="put-away-button__text">Put Away</span>
           </button>
         </div>
         <div class="jump-button">
@@ -603,7 +690,9 @@
               <span class="separator__line"></span>
               <img src="/icons/selector2-alpha.png" alt="" />
             </div>
-            <button aria-label="Close" data-screenshot-btn class="screenshot__close h4-reggae button-small">Close</button>
+            <button aria-label="Close" data-screenshot-btn class="screenshot__close h4-reggae button-small">
+              Close
+            </button>
           </div>
         </div>
         <div class="footer touch-hidden">
@@ -653,7 +742,7 @@
               <path class="cls-2-sound sound-line" d="m189.12,269.44L3.61,2.69" />
             </svg>
           </div>
-          <a href="https://www.youtube.com/@howtocodethat_" target="_blank" rel="noopener" class="footer__link">
+          <a href="https://www.youtube.com/watch?v=IyAOCwUWkNE" target="_blank" rel="noopener" class="footer__link">
             <svg class="footer__icon" xmlns="http://www.w3.org/2000/svg" width="56" height="40" viewBox="0 0 56 40">
               <path
                 d="m53.12,2.86c2.55,2.65,2.88,6.85,2.88,17.14s-.33,14.5-2.88,17.14c-2.55,2.65-5.21,2.86-25.12,2.86s-22.56-.21-25.11-2.86C.33,34.5,0,30.29,0,20S.33,5.5,2.89,2.86,8.09,0,28,0s22.56.21,25.12,2.86Zm-29.65,25.62l13.6-8.04-13.6-7.92v15.96Z"
@@ -670,7 +759,12 @@
               </g>
             </svg>
           </a>
-          <a href="https://github.com/Robpayot" target="_blank" rel="noopener" class="footer__link">
+          <a
+            href="https://github.com/Robpayot/zelda-project-public"
+            target="_blank"
+            rel="noopener"
+            class="footer__link"
+          >
             <svg
               class="footer__icon"
               id="Layer_1"

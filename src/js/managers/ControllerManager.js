@@ -4,13 +4,27 @@ import { gsap } from 'gsap'
 import { clamp, degToRad, lerp, radToDeg, randInt } from 'three/src/math/MathUtils'
 import ModeManager from './ModeManager'
 import GameManager from './GameManager'
-import { CAMERA_FOLLOW, DARK_LINK, EVENT_HIT, MODE, START_TOUCH } from '../utils/constants'
+import {
+  CAMERA_FOLLOW,
+  DARK_LINK,
+  EVENT_HIT,
+  EXPLORE_MESSAGE,
+  HOOK_PUT_AWAY,
+  MODE,
+  START_TOUCH,
+  TOOGLE_HOOK,
+} from '../utils/constants'
 import { EventBusSingleton } from 'light-event-bus'
 import { getDistance } from '../utils/math'
 import SoundManager, { SOUNDS_CONST } from './SoundManager'
 import { throttle } from '../utils/throttle'
+import { BOAT_MODE } from '../components/Boat'
+import UIManager from './UIManager'
+import CinematicManager from './CinematicManager'
+import { GLOBALS } from '../utils/globals'
 
-export const MAX_VELOCITY = 0.02
+export const MAX_VELOCITY = 0.025
+export const MAX_VELOCITY_CRANE = 0.01
 export const MAX_VELOCITY_GAME = 0.03 // 0.03
 
 const GRAVITY = 0.6
@@ -37,6 +51,8 @@ class ControllerManager {
   #up = 0
   #touchStart = { x: 0, y: 0 }
   #doubleJump = false
+  #boatMode = BOAT_MODE.SAIL
+  maxBoatSpeed = 1
 
   constructor() {
     this._handleResize()
@@ -47,8 +63,6 @@ class ControllerManager {
     window.addEventListener('keyup', this._handleKeyup)
     EventBusSingleton.subscribe(EVENT_HIT, this._eventHit)
 
-    this.tooCloseEl = document.querySelector('[data-explore-to-close]')
-
     this._initKonami()
 
     this.throttleTurn = throttle(this._turnBoatSound, 3500)
@@ -58,6 +72,7 @@ class ControllerManager {
       this.stickEl = document.querySelector('[data-joystick-stick]')
       this.joystickEl = document.querySelector('[data-joystick]')
       this.jumpBtnEl = document.querySelector('[data-jump-button]')
+      this.putAwayBtnEl = document.querySelector('[data-put-away-button]')
       this.joystickElLeft = document.querySelector('[data-joystick-left]')
       this.joystickElRight = document.querySelector('[data-joystick-right]')
 
@@ -68,6 +83,7 @@ class ControllerManager {
       document.body.addEventListener('touchend', this._stickTouchEnd, { passive: true })
 
       this.jumpBtnEl.addEventListener('touchstart', this._clickJumpButton, { passive: true })
+      this.putAwayBtnEl.addEventListener('touchstart', this._clickPutAwayButton, { passive: true })
       this.joystickElLeft.addEventListener('touchstart', this._stickLeft, { passive: true })
       this.joystickElRight.addEventListener('touchstart', this._stickRight, { passive: true })
       this.joystickElLeft.addEventListener('touchend', this._stickLeftEnd, { passive: true })
@@ -88,6 +104,14 @@ class ControllerManager {
 
   get boat() {
     return this.#boat
+  }
+
+  get deltaAngle() {
+    return this.#deltaAngle
+  }
+
+  get boatMode() {
+    return this.#boatMode
   }
 
   _initKonami() {
@@ -138,6 +162,7 @@ class ControllerManager {
   }
 
   _stickTouchStart = (e) => {
+    if (CinematicManager.isPlaying) return
     this._handleResize()
     this.canStickTouch = true
     if (ModeManager.state === MODE.EXPLORE) {
@@ -146,7 +171,7 @@ class ControllerManager {
   }
 
   _stickTouchMove = (e) => {
-    if (!this.canStickTouch || this.stopped) return
+    if (!this.canStickTouch || this.stopped || CinematicManager.isPlaying) return
     const x = e.touches[0].pageX - this.stickElRect.left - this.stickEl.offsetWidth / 2
     const y = e.touches[0].pageY - this.stickElRect.top - this.stickEl.offsetWidth / 2
 
@@ -180,7 +205,14 @@ class ControllerManager {
   }
 
   _stickTouchEnd = (e) => {
-    if (e.touches.length > 1 || this.jumped === true) return // if touching elsewhere
+    if (e.touches.length > 1 || this.jumped === true || CinematicManager.isPlaying) return // if touching elsewhere
+
+    if (this.#boatMode === BOAT_MODE.HOOK && this.putAway) {
+      // if put away hook
+      this.putAway = false
+      EventBusSingleton.publish(HOOK_PUT_AWAY, false)
+      return
+    }
     this.#joystick.y = 0
     this.#joystick.x = 0
 
@@ -200,24 +232,29 @@ class ControllerManager {
   }
 
   _stickLeft = () => {
+    if (CinematicManager.isPlaying) return
     this.#joystick.x = -1
     this.throttleTurn()
   }
 
   _stickRight = () => {
+    if (CinematicManager.isPlaying) return
     this.#joystick.x = 1
     this.throttleTurn()
   }
 
   _stickLeftEnd = () => {
+    if (CinematicManager.isPlaying) return
     this.#joystick.x = 0
   }
 
   _stickRightEnd = () => {
+    if (CinematicManager.isPlaying) return
     this.#joystick.x = 0
   }
 
   _clickJumpButton = () => {
+    if (CinematicManager.isPlaying) return
     if (this.#up === 0) {
       if (this.#boat.velocityP > 0.5) {
         this.#targetUp = 35
@@ -232,7 +269,17 @@ class ControllerManager {
     }
   }
 
+  _clickPutAwayButton = () => {
+    if (CinematicManager.isPlaying) return
+    if (this.#boatMode === BOAT_MODE.HOOK) {
+      this.putAway = true
+      EventBusSingleton.publish(HOOK_PUT_AWAY, true)
+      return
+    }
+  }
+
   _handleMousemove = (e) => {
+    if (CinematicManager.isPlaying) return
     let eventX = this.#isTouch ? e.touches[0].pageX : e.clientX
     let eventY = this.#isTouch ? e.touches[0].pageY : e.clientY
     const x = eventX / this.#width
@@ -243,6 +290,7 @@ class ControllerManager {
   }
 
   _handleKeydown = (e) => {
+    if (this.putAway || CinematicManager.isPlaying) return
     switch (e.keyCode) {
       case 37:
       case 65: // a
@@ -270,6 +318,11 @@ class ControllerManager {
         break
       case 32:
         // spacebar
+        if (this.#boatMode === BOAT_MODE.HOOK) {
+          this.putAway = true
+          EventBusSingleton.publish(HOOK_PUT_AWAY, true)
+          return
+        }
         if (this.#doubleJump) {
           if (!this.jumpOnce) {
             if (this.#up === 0) {
@@ -301,10 +354,21 @@ class ControllerManager {
         }
 
         break
+      case 69:
+        // E
+        UIManager.screenshotEl.classList.add('visible')
+        UIManager.snap = true
+        break
+      case 70:
+        // F
+        EventBusSingleton.publish(TOOGLE_HOOK)
+
+        break
     }
   }
 
   _handleKeyup = (e) => {
+    if (CinematicManager.isPlaying) return
     switch (e.keyCode) {
       case 37:
       case 65:
@@ -321,6 +385,14 @@ class ControllerManager {
       case 83:
         // up
         this.#joystick.y = 0
+        break
+      case 32:
+        // space bar
+        this.putAway = false
+        if (this.#boatMode === BOAT_MODE.HOOK) {
+          EventBusSingleton.publish(HOOK_PUT_AWAY, false)
+          return
+        }
         break
     }
   }
@@ -354,6 +426,7 @@ class ControllerManager {
   startGame() {
     this.#boat.velocity = MAX_VELOCITY_GAME
   }
+
   update = ({ time, delta }) => {
     if (ModeManager.state === MODE.EXPLORE) {
       this._updateExplore(delta)
@@ -370,9 +443,36 @@ class ControllerManager {
     this.stopped = false
   }
 
+  updateBoatMode(boatMode) {
+    this.#boatMode = boatMode
+    clearTimeout(this.timeoutMsg)
+    if (boatMode === BOAT_MODE.HOOK) {
+      gsap.to(this, { maxBoatSpeed: 0.6, duration: 3 })
+
+      if (this.#isTouch) {
+        this.putAwayBtnEl.parentNode.classList.add('is-visible')
+      }
+
+      SoundManager.play(SOUNDS_CONST.OPEN)
+
+      this.timeoutMsg = setTimeout(() => {
+        EventBusSingleton.publish(EXPLORE_MESSAGE, { message: 'Use this on a glowing light!', time: 1500 })
+      }, 2000)
+    } else {
+      SoundManager.play(SOUNDS_CONST.OPEN)
+      gsap.to(this, { maxBoatSpeed: 1, duration: 0.8 })
+      if (this.#isTouch) {
+        this.putAwayBtnEl.parentNode.classList.remove('is-visible')
+      }
+    }
+  }
+
   _updateExplore(delta) {
     const d = delta ? delta / 16 : 1
-    const speed = 1.3
+    let speed = 1.3 * this.maxBoatSpeed
+    if (GLOBALS.triforce) {
+      speed *= 1.5
+    }
     // Jump
     this.#up = Math.max(0, lerp(this.#up, this.#targetUp, 0.05 * speed * d))
     this.#targetUp -= GRAVITY * speed * d
@@ -404,6 +504,8 @@ class ControllerManager {
     }
 
     // console.log(this.stopped)
+    let maxVelocity = MAX_VELOCITY * this.maxBoatSpeed
+    maxVelocity *= speed
 
     if (!this.stopped) {
       // Accelerate/Decelerate
@@ -421,22 +523,19 @@ class ControllerManager {
         }
       }
 
-      const max = MAX_VELOCITY * speed
-      this.#boat.velocity = clamp(this.#boat.velocity, 0, max)
-      this.#boat.velocityP = this.#boat.velocity / max
+      this.#boat.velocity = clamp(this.#boat.velocity, 0, maxVelocity)
+      this.#boat.velocityP = this.#boat.velocity / maxVelocity
     } else {
       this.#boat.velocity = -0.002 * speed
 
-      const max = MAX_VELOCITY * speed
-      this.#boat.velocity = clamp(this.#boat.velocity, -1, max)
-      this.#boat.velocityP = this.#boat.velocity / max
+      this.#boat.velocity = clamp(this.#boat.velocity, -1, maxVelocity)
+      this.#boat.velocityP = this.#boat.velocity / maxVelocity
 
       if (!this.cantMoveY) {
-        this.tooCloseEl.classList.add('active')
+        EventBusSingleton.publish(EXPLORE_MESSAGE, { message: 'Too close!' })
         setTimeout(() => {
           this.cantMoveY = false
           this.stopped = false
-          this.tooCloseEl.classList.remove('active')
         }, 500)
         this.cantMoveY = true
       }

@@ -1,4 +1,4 @@
-import { DoubleSide, ShaderMaterial } from 'three'
+import { ShaderMaterial } from 'three'
 import ControllerManager from '../../managers/ControllerManager'
 import sailVertexShader from '@glsl/boat/sail.vert'
 import sailFragmentShader from '@glsl/boat/sail.frag'

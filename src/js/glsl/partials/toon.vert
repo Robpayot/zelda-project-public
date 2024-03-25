@@ -61,7 +61,7 @@ void main() {
 		skinned += boneMatZ * skinVertex * skinWeight.z;
 		skinned += boneMatW * skinVertex * skinWeight.w;
 
-		pos = ( bindMatrixInverse * skinned ).xyz;
+		pos = ( bindMatrixInverse * skinned).xyz;
 
       // Skin normal calculation
   	mat4 skinMatrix = mat4( 0.0 );

@@ -38,6 +38,8 @@ varying vec4 vShadowCoord;
 	}
 #endif
 
+#include <morphtarget_pars_vertex>
+
 void main() {
     vUv = uv;
     vNormal = normal;
@@ -47,6 +49,46 @@ void main() {
 		vec3 surfaceToLightDirection = vec3( modelViewMatrix * vec4(pos, 1.0));
 		vec3 worldLightPos = vec3(viewMatrix * vec4(sunDir, 1.0));
 		vSurfaceToLight = normalize(worldLightPos - surfaceToLightDirection);
+
+		// morph target compute
+
+		#ifdef USE_MORPHTARGETS
+
+		// morphTargetBaseInfluence is set based on BufferGeometry.morphTargetsRelative value:
+		// When morphTargetsRelative is false, this is set to 1 - sum(influences); this results in position = sum((target - base) * influence)
+		// When morphTargetsRelative is true, this is set to 1; as a result, all morph targets are simply added to the base after weighting
+		pos *= morphTargetBaseInfluence;
+
+			#ifdef MORPHTARGETS_TEXTURE
+
+				for ( int i = 0; i < MORPHTARGETS_COUNT; i ++ ) {
+
+					if ( morphTargetInfluences[ i ] != 0.0 ) pos += getMorph( gl_VertexID, i, 0 ).xyz * morphTargetInfluences[ i ];
+
+				}
+
+			#endif
+
+		#endif
+
+		#ifdef USE_MORPHNORMALS
+
+			// morphTargetBaseInfluence is set based on BufferGeometry.morphTargetsRelative value:
+			// When morphTargetsRelative is false, this is set to 1 - sum(influences); this results in normal = sum((target - base) * influence)
+			// When morphTargetsRelative is true, this is set to 1; as a result, all morph targets are simply added to the base after weighting
+			vNormal *= morphTargetBaseInfluence;
+
+			#ifdef MORPHTARGETS_TEXTURE
+
+				for ( int i = 0; i < MORPHTARGETS_COUNT; i ++ ) {
+
+					if ( morphTargetInfluences[ i ] != 0.0 ) vNormal += getMorph( gl_VertexID, i, 1 ).xyz * morphTargetInfluences[ i ];
+
+				}
+
+			#endif
+
+		#endif
 
 		#ifdef USE_BONES
 

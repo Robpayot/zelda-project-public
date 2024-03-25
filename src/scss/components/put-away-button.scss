@@ -1,0 +1,67 @@
+.put-away-button {
+  pointer-events: auto;
+  position: absolute;
+  border-radius: 50%;
+  bottom: calc(30px + 30vw);
+  left: 25px;
+  width: 25vw;
+  height: 30vw;
+  align-items: center;
+  justify-content: center;
+
+  user-select: none;
+  display: flex;
+
+  visibility: hidden;
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.7s var(--ease-out-bounce);
+
+  @include respond-to(above-smartphone) {
+    width: 20vw;
+    height: 20vw;
+    bottom: calc(40px + 20vw);
+  }
+
+  @include respond-to(mobile-landscape) {
+    width: 20vw;
+    height: 20vw;
+    left: 37vw;
+    bottom: 10px;
+  }
+
+  &.is-visible {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+  }
+
+  &__content {
+    user-select: none;
+    z-index: 10;
+    width: 100%;
+    height: 25vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(211 211 211 / 71%);
+    border-radius: 50%;
+    touch-action: manipulation;
+
+    @include respond-to(above-smartphone) {
+      height: 20vw;
+    }
+
+    @include respond-to(mobile-landscape) {
+      height: 20vw;
+    }
+  }
+
+  &__text {
+    font-family: 'ReggaeOne';
+    font-size: 3.5vw;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none;
+  }
+}

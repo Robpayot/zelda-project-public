@@ -90,6 +90,7 @@ export default class Barrels {
     mesh2.material = material2
 
     barrelGroup.visible = false
+    barrelGroup.canVisible = false
 
     return barrelGroup
   }

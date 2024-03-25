@@ -40,6 +40,7 @@ export default class BarrelRupees {
     mesh.add(barrelMesh)
 
     mesh.visible = false
+    mesh.canVisible = false
 
     return mesh
   }

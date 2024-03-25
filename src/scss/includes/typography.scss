@@ -71,7 +71,7 @@
   font-size: 2vw;
   color: var(--color-black);
 
-  @include responsive-font-size(36, 16, 36);
+  @include responsive-font-size(24, 16, 24);
 
   @include respond-to(smartphone) {
     font-size: 4vw;
@@ -171,16 +171,22 @@
 
 .keyboard-arrows {
   width: 5vw;
-  max-width: 96px;
+  max-width: 60px;
 }
 
 .keyboard-space {
   width: 3.5vw;
-  max-width: 67px;
+  max-width: 40px;
 }
 
 .cursor {
-  max-width: 25px;
+  max-width: 16px;
   width: 1.3vw;
   margin: 0 0.6vw -0.3vw;
+}
+
+.t-button-controls {
+  font-family: 'RocknRollOne';
+  // @include responsive-font-size(36, 26, 36);
+  font-size: 26px;
 }
